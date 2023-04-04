@@ -10,7 +10,7 @@ interface SongDescriptionHelper {
 
 internal class SongDescriptionHelperImpl : SongDescriptionHelper {
     override fun getSongDescriptionText(song: Song): String {
-        when (song.precision)
+        //when (song.precision)
 
         return when (song) {
             is SpotifySong ->
