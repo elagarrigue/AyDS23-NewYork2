@@ -15,6 +15,14 @@ sealed class Song {
     ) : Song() {
 
         val year: String = releaseDate.split("-").first()
+
+        val fechaExacta: String =
+            when (precision) {
+                "day" -> "dice dia"
+                "month" -> "dice month"
+                "year" -> "dice year"
+                else -> "undefined"
+            }
     }
 
     object EmptySong : Song()
