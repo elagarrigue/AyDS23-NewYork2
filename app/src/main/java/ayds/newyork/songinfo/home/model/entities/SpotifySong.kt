@@ -14,13 +14,11 @@ sealed class Song {
         var isLocallyStored: Boolean = false
     ) : Song() {
 
-        val year: String = releaseDate.split("-").first()
-
         val fechaExacta: String =
-            when (precision) {
-                "day" -> "dice dia"
-                "month" -> "dice month"
-                "year" -> "dice year"
+            when (precision) {//hay que ver donde poner este when para aplicar el principio de responsabilidad unica
+                "day" -> precision
+                "month" -> "parsear a tipo month"
+                "year" -> "parsear a tipo years"
                 else -> "undefined"
             }
     }
