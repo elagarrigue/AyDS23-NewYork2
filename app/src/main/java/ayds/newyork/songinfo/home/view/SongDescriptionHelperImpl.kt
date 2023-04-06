@@ -9,6 +9,7 @@ interface SongDescriptionHelper {
 }
 
 internal class SongDescriptionHelperImpl : SongDescriptionHelper {
+    val ReleaseDateConverter: ReleaseDateConverter = ReleaseDateConverterImpl()
     override fun getSongDescriptionText(song: Song): String {
         return when (song) {
             is SpotifySong ->
@@ -18,7 +19,7 @@ internal class SongDescriptionHelperImpl : SongDescriptionHelper {
                 }\n" +
                         "Artist: ${song.artistName}\n" +
                         "Album: ${song.albumName}\n" +
-                        "Release date: ${song.fechaExacta}"
+                        "Release date: ${ReleaseDateConverter.convertToPrecision(song)}"
             else -> "Song not found"
         }
     }
