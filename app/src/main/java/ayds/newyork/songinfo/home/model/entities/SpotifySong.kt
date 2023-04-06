@@ -12,16 +12,7 @@ sealed class Song {
         val imageUrl: String,
         val precision: String,
         var isLocallyStored: Boolean = false
-    ) : Song() {
-
-        val fechaExacta: String =
-            when (precision) {//hay que ver donde poner este when para aplicar el principio de responsabilidad unica
-                "day" -> precision
-                "month" -> "parsear a tipo month"
-                "year" -> "parsear a tipo years"
-                else -> "undefined"
-            }
-    }
+    ) : Song()
 
     object EmptySong : Song()
 }

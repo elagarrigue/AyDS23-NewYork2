@@ -18,7 +18,7 @@ interface ReleaseDateConverter{
 
 internal class ReleaseDateConverterImpl: ReleaseDateConverter{
     override fun convertToPrecision(song: Song): String {
-        var releaseDateConverted = "Release Date: "
+        var releaseDateConverted = ""
 
         if(song is SpotifySong)
             when(song.precision){
