@@ -21,7 +21,7 @@ internal class ReleaseDateConverterImpl: ReleaseDateConverter{
         var releaseDateConverted = ""
 
         if(song is SpotifySong)
-            when(song.precision){
+            when(song.releaseDatePrecision){
                 "day" -> {
                     releaseDateConverted += convertStringToDateForDay(song.releaseDate)
                 }

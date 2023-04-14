@@ -56,7 +56,7 @@ internal class SpotifyLocalStorageImpl(
             put(RELEASE_DATE_COLUMN, song.releaseDate)
             put(SPOTIFY_URL_COLUMN, song.spotifyUrl)
             put(IMAGE_URL_COLUMN, song.imageUrl)
-            put(PRECISION_COLUMN, song.precision)
+            put(PRECISION_COLUMN, song.releaseDatePrecision)
         }
 
         writableDatabase?.insert(SONGS_TABLE, null, values)

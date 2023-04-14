@@ -16,14 +16,14 @@ internal class CursorToSpotifySongMapperImpl : CursorToSpotifySongMapper {
             with(cursor) {
                 if (moveToNext()) {
                     SpotifySong(
-                      id = getString(getColumnIndexOrThrow(ID_COLUMN)),
-                      songName = getString(getColumnIndexOrThrow(NAME_COLUMN)),
-                      artistName = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
-                      albumName = getString(getColumnIndexOrThrow(ALBUM_COLUMN)),
-                      releaseDate = getString(getColumnIndexOrThrow(RELEASE_DATE_COLUMN)),
-                      spotifyUrl = getString(getColumnIndexOrThrow(SPOTIFY_URL_COLUMN)),
-                      imageUrl = getString(getColumnIndexOrThrow(IMAGE_URL_COLUMN)),
-                        precision = getString(getColumnIndexOrThrow(PRECISION_COLUMN)),
+                        id = getString(getColumnIndexOrThrow(ID_COLUMN)),
+                        songName = getString(getColumnIndexOrThrow(NAME_COLUMN)),
+                        artistName = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
+                        albumName = getString(getColumnIndexOrThrow(ALBUM_COLUMN)),
+                        releaseDate = getString(getColumnIndexOrThrow(RELEASE_DATE_COLUMN)),
+                        spotifyUrl = getString(getColumnIndexOrThrow(SPOTIFY_URL_COLUMN)),
+                        imageUrl = getString(getColumnIndexOrThrow(IMAGE_URL_COLUMN)),
+                        releaseDatePrecision = getString(getColumnIndexOrThrow(PRECISION_COLUMN)),
                     )
                 } else {
                     null
