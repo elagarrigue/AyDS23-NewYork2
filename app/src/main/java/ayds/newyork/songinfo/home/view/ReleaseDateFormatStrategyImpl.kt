@@ -3,11 +3,11 @@ package ayds.newyork.songinfo.home.view
 import ayds.newyork.songinfo.utils.view.isLeapYear
 import java.text.SimpleDateFormat
 
-interface ReleaseDateConverterFormat{
+interface ReleaseDateFormatStrategy{
     fun convertStringToDate(songReleaseDate: String): String
 }
 
-internal class ReleaseDateConverterFormatDay: ReleaseDateConverterFormat{
+internal class ReleaseDateFormatStrategyDay: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         val inputDate = SimpleDateFormat("yyyy-MM-dd")
         val outputDate = SimpleDateFormat("dd/MM/yyyy")
@@ -16,7 +16,7 @@ internal class ReleaseDateConverterFormatDay: ReleaseDateConverterFormat{
     }
 }
 
-internal class ReleaseDateConverterFormatMonth: ReleaseDateConverterFormat{
+internal class ReleaseDateFormatStrategyMonth: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         val songReleaseDateMonth = songReleaseDate.substringAfter('-')
         val monthFormated = monthMapping(songReleaseDateMonth)
@@ -41,19 +41,16 @@ internal class ReleaseDateConverterFormatMonth: ReleaseDateConverterFormat{
     }
 }
 
-internal class ReleaseDateConverterFormatYear: ReleaseDateConverterFormat{
+internal class ReleaseDateFormatStrategyYear: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
-        var formatedDate = songReleaseDate
-
-        if(isLeapYear(songReleaseDate))
-            formatedDate += " (a leap year)"
+        return if(isLeapYear(songReleaseDate))
+            "$songReleaseDate (a leap year)"
         else
-            formatedDate += " (not a leap year)"
-        return formatedDate
+            "$songReleaseDate (not a leap year)"
     }
 }
 
-internal class ReleaseDateConverterFormatDefault(): ReleaseDateConverterFormat{
+internal class ReleaseDateFormatStrategyDefault(): ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         return "Incorrect ReleaseDatePrecision"
     }

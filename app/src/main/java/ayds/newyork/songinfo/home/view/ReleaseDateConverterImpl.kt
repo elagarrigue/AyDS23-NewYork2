@@ -12,13 +12,13 @@ interface ReleaseDateConverter{
 
 internal class ReleaseDateConverterImpl: ReleaseDateConverter{
     override fun convertToPrecision(song: Song): String {
-        var releaseDateConverted = ""
-        var releaseDateConverterFormat : ReleaseDateConverterFormat
-        if(song is SpotifySong){
-            releaseDateConverterFormat = ReleaseDateConverterInjector.getConverter(song.releaseDatePrecision)
-            releaseDateConverted = releaseDateConverterFormat.convertStringToDate(song.releaseDate)
+        return if(song is SpotifySong){
+            with(ReleaseDateConverterInjector.getConverter(song.releaseDatePrecision)) {
+                this.convertStringToDate(song.releaseDate)
+            }
         }
-        return releaseDateConverted
+        else
+            "Could not find date"
     }
 
 }
