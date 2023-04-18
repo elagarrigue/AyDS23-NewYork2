@@ -28,6 +28,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class OtherInfoWindow extends AppCompatActivity {
 
     public final static String ARTIST_NAME_EXTRA = "artistName";
+    public final static String LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/";
+    public final static String HTML_DIV_WIDTH = "400";
+    public final static String HTML_FONT_FACE = "arial";
+    public final static String IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU";
+
     private TextView textPane2;
     private DataBase dataBase = null;
 
@@ -39,7 +44,6 @@ public class OtherInfoWindow extends AppCompatActivity {
 
         textPane2 = findViewById(R.id.textPane2);
 
-
         open(getIntent().getStringExtra("artistName"));
     }
 
@@ -47,12 +51,11 @@ public class OtherInfoWindow extends AppCompatActivity {
 
         // create
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.nytimes.com/svc/search/v2/")
+                .baseUrl(LINK_API_NYTIMES)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        NYTimesAPI NYTimesAPI = retrofit.create(NYTimesAPI.class);
-
+        NYTimesAPI nyTimesAPI = retrofit.create(NYTimesAPI.class);
 
         Log.e("TAG", "artistName " + artistName);
 
@@ -62,14 +65,13 @@ public class OtherInfoWindow extends AppCompatActivity {
 
                 String text = DataBase.getInfo(dataBase, artistName);
 
-
                 if (text != null) { // exists in db
 
                     text = "[*]" + text;
                 } else { // get from service
                     Response<String> callResponse;
                     try {
-                        callResponse = NYTimesAPI.getArtistInfo(artistName).execute();
+                        callResponse = nyTimesAPI.getArtistInfo(artistName).execute();
 
                         Log.e("TAG", "JSON " + callResponse.body());
 
@@ -111,7 +113,7 @@ public class OtherInfoWindow extends AppCompatActivity {
                 }
 
 
-                String imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU";
+                String imageUrl = IMAGE_URL;
 
                 Log.e("TAG", "Get Image from " + imageUrl);
 
@@ -149,8 +151,9 @@ public class OtherInfoWindow extends AppCompatActivity {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append("<html><div width=400>");
-        builder.append("<font face=\"arial\">");
+        builder.append("<html>");
+        builder.append("<div width=").append(HTML_DIV_WIDTH).append(">");
+        builder.append("<font face=").append(HTML_FONT_FACE).append(">");
 
         String textWithBold = text
                 .replace("'", " ")
