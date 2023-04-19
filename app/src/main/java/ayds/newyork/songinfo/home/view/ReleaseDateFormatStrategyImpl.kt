@@ -7,7 +7,7 @@ interface ReleaseDateFormatStrategy{
     fun convertStringToDate(songReleaseDate: String): String
 }
 
-internal class ReleaseDateFormatStrategyDay: ReleaseDateFormatStrategy{
+internal class ReleaseDateFormatDayStrategy: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         val inputDate = SimpleDateFormat("yyyy-MM-dd")
         val outputDate = SimpleDateFormat("dd/MM/yyyy")
@@ -16,7 +16,7 @@ internal class ReleaseDateFormatStrategyDay: ReleaseDateFormatStrategy{
     }
 }
 
-internal class ReleaseDateFormatStrategyMonth: ReleaseDateFormatStrategy{
+internal class ReleaseDateFormatMonthStrategy: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         val songReleaseDateMonth = songReleaseDate.substringAfter('-')
         val monthFormated = monthMapping(songReleaseDateMonth)
@@ -41,7 +41,7 @@ internal class ReleaseDateFormatStrategyMonth: ReleaseDateFormatStrategy{
     }
 }
 
-internal class ReleaseDateFormatStrategyYear: ReleaseDateFormatStrategy{
+internal class ReleaseDateFormatYearStrategy: ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         return if(isLeapYear(songReleaseDate))
             "$songReleaseDate (a leap year)"
@@ -50,7 +50,7 @@ internal class ReleaseDateFormatStrategyYear: ReleaseDateFormatStrategy{
     }
 }
 
-internal class ReleaseDateFormatStrategyDefault(): ReleaseDateFormatStrategy{
+internal class ReleaseDateFormatDefaultStrategy(): ReleaseDateFormatStrategy{
     override fun convertStringToDate(songReleaseDate: String): String {
         return "Incorrect ReleaseDatePrecision"
     }
