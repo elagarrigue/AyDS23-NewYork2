@@ -4,7 +4,7 @@ private const val DAY_PRECISION = "day"
 private const val MONTH_PRECISION = "month"
 private const val YEAR_PRECISION = "year"
 
-object ReleaseDateConverterFactory{
+class ReleaseDateConverterFactory{
     fun getConverter(songReleaseDatePrecision: String): ReleaseDateFormatStrategy =
         when (songReleaseDatePrecision) {
             DAY_PRECISION -> ReleaseDateFormatDayStrategy()
