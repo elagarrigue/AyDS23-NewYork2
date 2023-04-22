@@ -17,11 +17,11 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", nu
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    fun DataBase.saveArtist(artist: String, info: String) =
+    fun saveArtist(artist: String?, info: String) =
         this.writableDatabase.insert("artists", null, createArtistWithValues(artist, info))
 
 
-    private fun createArtistWithValues(artist: String, info: String): ContentValues {
+    private fun createArtistWithValues(artist: String?, info: String): ContentValues {
         val values = ContentValues()
 
         values.put("artist", artist)
@@ -31,12 +31,12 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", nu
         return values
     }
 
-    fun DataBase.getInfo(artist: String): String? {
+    fun getInfo(artist: String?): String? {
         val items = cursorIterator(createCursor(this, artist))
         return if (items.isEmpty()) null else items[0]
     }
 
-    private fun createCursor(dbHelper: DataBase, artist: String): Cursor {
+    private fun createCursor(dbHelper: DataBase, artist: String?): Cursor {
         return dbHelper.readableDatabase.query(
             "artists",
             constructProjection(),
