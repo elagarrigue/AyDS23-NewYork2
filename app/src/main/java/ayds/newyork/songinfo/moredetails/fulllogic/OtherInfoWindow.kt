@@ -20,11 +20,12 @@ import java.io.IOException
 import java.util.*
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
-private const val ARTIST_NAME = "artistName"
+const val ARTIST_NAME = "artistName"
 private const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
 private const val HTML_DIV_WIDTH = "400"
 private const val HTML_FONT_FACE = "arial"
-private const val IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
+private const val IMAGE_URL =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
 
 class OtherInfoWindow : AppCompatActivity() {
     private var textPane2: TextView? = null
@@ -37,18 +38,17 @@ class OtherInfoWindow : AppCompatActivity() {
         open(intent.getStringExtra(ARTIST_NAME))
     }
 
-    private fun initDataBase(){
+    private fun initDataBase() {
         dataBase = DataBase(this)
     }
 
-    private fun initViewInfo(){
+    private fun initViewInfo() {
         setContentView(R.layout.activity_other_info)
         textPane2 = findViewById(R.id.textPane2)
     }
 
-    private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject{
-        val callResponse: Response<String>
-        callResponse = nyTimesAPI.getArtistInfo(artistName).execute()
+    private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject {
+        val callResponse: Response<String> = nyTimesAPI.getArtistInfo(artistName).execute()
         Log.e("TAG", "JSON" + callResponse.body())
         val gson = Gson()
         val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
@@ -69,12 +69,12 @@ class OtherInfoWindow : AppCompatActivity() {
                 val callResponse: Response<String>
                 try {
                     val response = generateResponse(nyTimesAPI, artistName)
-                    val _abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
+                    val abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
                     val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
-                    if (_abstract == null) {
+                    if (abstract == null) {
                         text = "No Results"
                     } else {
-                        text = _abstract.asString.replace("\\n", "\n")
+                        text = abstract.asString.replace("\\n", "\n")
                         text = textToHtml(text, artistName)
 
                         // save to DB  <o/
@@ -103,7 +103,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
 
-    private fun createRetroFit() : Retrofit = Retrofit.Builder()
+    private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
