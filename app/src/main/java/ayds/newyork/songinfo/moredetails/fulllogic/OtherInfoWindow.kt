@@ -19,6 +19,12 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
 
+private const val IN_LOCAL_REPOSITORY = "[*]"
+private const val ARTIST_NAME = "artistName"
+private const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
+private const val HTML_DIV_WIDTH = "400"
+private const val HTML_FONT_FACE = "arial"
+private const val IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
 
 class OtherInfoWindow : AppCompatActivity() {
     private var textPane2: TextView? = null
@@ -28,7 +34,7 @@ class OtherInfoWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         initViewInfo()
         initDataBase()
-        open(intent.getStringExtra("artistName"))
+        open(intent.getStringExtra(ARTIST_NAME))
     }
 
     private fun initDataBase(){
@@ -40,6 +46,15 @@ class OtherInfoWindow : AppCompatActivity() {
         textPane2 = findViewById(R.id.textPane2)
     }
 
+    private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject{
+        val callResponse: Response<String>
+        callResponse = nyTimesAPI.getArtistInfo(artistName).execute()
+        Log.e("TAG", "JSON" + callResponse.body())
+        val gson = Gson()
+        val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
+        return jobj["response"].asJsonObject
+    }
+
     private fun getArtistInfo(artistName: String?) {
 
         val retrofit = createRetroFit()
@@ -49,15 +64,11 @@ class OtherInfoWindow : AppCompatActivity() {
         Thread {
             var text: String? = dataBase?.getInfo(artistName)
             if (text != null) {
-                text = "[*]$text"
+                text = "$IN_LOCAL_REPOSITORY$text"
             } else {
                 val callResponse: Response<String>
                 try {
-                    callResponse = nyTimesAPI.getArtistInfo(artistName).execute()
-                    Log.e("TAG", "JSON " + callResponse.body())
-                    val gson = Gson()
-                    val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
-                    val response = jobj["response"].asJsonObject
+                    val response = generateResponse(nyTimesAPI, artistName)
                     val _abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
                     val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
                     if (_abstract == null) {
@@ -65,7 +76,6 @@ class OtherInfoWindow : AppCompatActivity() {
                     } else {
                         text = _abstract.asString.replace("\\n", "\n")
                         text = textToHtml(text, artistName)
-
 
                         // save to DB  <o/
                         dataBase?.saveArtist(artistName, text)
@@ -100,19 +110,13 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun open(artist: String?) {
         dataBase?.saveArtist("test", "sarasa")
-        var info = dataBase?.getInfo("test")
+        val info = dataBase?.getInfo("test")
         Log.e("TAG", "" + info)
         Log.e("TAG", "" + dataBase?.getInfo("nada"))
         getArtistInfo(artist)
     }
 
     companion object {
-
-        const val ARTIST_NAME_EXTRA = "artistName"
-        const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
-        const val HTML_DIV_WIDTH = "400"
-        const val HTML_FONT_FACE = "arial"
-        const val IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
 
         fun textToHtml(text: String, term: String?): String {
             val builder = StringBuilder()
