@@ -35,7 +35,7 @@ class OtherInfoWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         initViewInfo()
         initDataBase()
-        open(intent.getStringExtra(ARTIST_NAME))
+        getArtistInfo(intent.getStringExtra(ARTIST_NAME))
     }
 
     private fun initDataBase() {
@@ -51,8 +51,8 @@ class OtherInfoWindow : AppCompatActivity() {
         val callResponse: Response<String> = nyTimesAPI.getArtistInfo(artistName).execute()
         Log.e("TAG", "JSON" + callResponse.body())
         val gson = Gson()
-        val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
-        return jobj["response"].asJsonObject
+        val jObj = gson.fromJson(callResponse.body(), JsonObject::class.java)
+        return jObj["response"].asJsonObject
     }
 
     private fun getArtistInfo(artistName: String?) {
@@ -62,23 +62,20 @@ class OtherInfoWindow : AppCompatActivity() {
 
         Log.e("TAG", "artistName $artistName")
         Thread {
-            var text: String? = dataBase.getInfo(artistName)
-            if (text != null) {
-                text = "$IN_LOCAL_REPOSITORY$text"
+            var infoArtista: String? = dataBase.getInfo(artistName)
+            if (infoArtista != null) {
+                infoArtista = "$IN_LOCAL_REPOSITORY$infoArtista"
             } else {
-                val callResponse: Response<String>
                 try {
                     val response = generateResponse(nyTimesAPI, artistName)
                     val abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
                     val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
                     if (abstract == null) {
-                        text = "No Results"
+                        infoArtista = "No Results"
                     } else {
-                        text = abstract.asString.replace("\\n", "\n")
-                        text = textToHtml(text, artistName)
-
-                        // save to DB  <o/
-                        dataBase.saveArtist(artistName, text)
+                        infoArtista = abstract.asString.replace("\\n", "\n")
+                        infoArtista = textToHtml(infoArtista, artistName)
+                        dataBase.saveArtist(artistName, infoArtista)
                     }
                     val urlString = url.asString
                     findViewById<View>(R.id.openUrlButton).setOnClickListener {
@@ -93,7 +90,7 @@ class OtherInfoWindow : AppCompatActivity() {
             }
             val imageUrl = IMAGE_URL
             Log.e("TAG", "Get Image from $imageUrl")
-            val finalText = text
+            val finalText = infoArtista
             runOnUiThread {
                 Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView) as ImageView)
                 textPane2.text = Html.fromHtml(finalText)
@@ -107,14 +104,6 @@ class OtherInfoWindow : AppCompatActivity() {
         .baseUrl(LINK_API_NYTIMES)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
-
-    private fun open(artist: String?) {
-        dataBase.saveArtist("test", "sarasa")
-        val info = dataBase.getInfo("test")
-        Log.e("TAG", "" + info)
-        Log.e("TAG", "" + dataBase.getInfo("nada"))
-        getArtistInfo(artist)
-    }
 
     companion object {
 
