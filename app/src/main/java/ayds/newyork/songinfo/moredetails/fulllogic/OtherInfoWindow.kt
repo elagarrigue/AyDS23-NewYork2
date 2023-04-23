@@ -28,8 +28,8 @@ private const val IMAGE_URL =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
 
 class OtherInfoWindow : AppCompatActivity() {
-    private var textPane2: TextView? = null
-    private var dataBase: DataBase? = null
+    private lateinit var textPane2: TextView
+    private lateinit var dataBase: DataBase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +62,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
         Log.e("TAG", "artistName $artistName")
         Thread {
-            var text: String? = dataBase?.getInfo(artistName)
+            var text: String? = dataBase.getInfo(artistName)
             if (text != null) {
                 text = "$IN_LOCAL_REPOSITORY$text"
             } else {
@@ -78,7 +78,7 @@ class OtherInfoWindow : AppCompatActivity() {
                         text = textToHtml(text, artistName)
 
                         // save to DB  <o/
-                        dataBase?.saveArtist(artistName, text)
+                        dataBase.saveArtist(artistName, text)
                     }
                     val urlString = url.asString
                     findViewById<View>(R.id.openUrlButton).setOnClickListener {
@@ -96,7 +96,7 @@ class OtherInfoWindow : AppCompatActivity() {
             val finalText = text
             runOnUiThread {
                 Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView) as ImageView)
-                textPane2!!.text = Html.fromHtml(finalText)
+                textPane2.text = Html.fromHtml(finalText)
             }
         }.start()
     }
@@ -109,10 +109,10 @@ class OtherInfoWindow : AppCompatActivity() {
         .build()
 
     private fun open(artist: String?) {
-        dataBase?.saveArtist("test", "sarasa")
-        val info = dataBase?.getInfo("test")
+        dataBase.saveArtist("test", "sarasa")
+        val info = dataBase.getInfo("test")
         Log.e("TAG", "" + info)
-        Log.e("TAG", "" + dataBase?.getInfo("nada"))
+        Log.e("TAG", "" + dataBase.getInfo("nada"))
         getArtistInfo(artist)
     }
 
