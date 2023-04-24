@@ -31,11 +31,15 @@ class OtherInfoWindow : AppCompatActivity() {
     private lateinit var textPane2: TextView
     private lateinit var dataBase: DataBase
 
+    private val retrofit = createRetroFit()
+    private val nyTimesAPI = createAPI(retrofit)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewInfo()
         initDataBase()
-        getArtistInfo(intent.getStringExtra(ARTIST_NAME))
+        val artistName = intent.getStringExtra(ARTIST_NAME)
+        loadArtistInfo(artistName)
     }
 
     private fun initDataBase() {
@@ -55,11 +59,7 @@ class OtherInfoWindow : AppCompatActivity() {
         return jObj["response"].asJsonObject
     }
 
-    private fun getArtistInfo(artistName: String?) {
-
-        val retrofit = createRetroFit()
-        val nyTimesAPI = createAPI(retrofit)
-
+    private fun loadArtistInfo(artistName: String?) {
         Log.e("TAG", "artistName $artistName")
         Thread {
             var infoArtista: String? = dataBase.getInfo(artistName)
@@ -69,33 +69,44 @@ class OtherInfoWindow : AppCompatActivity() {
                 try {
                     val response = generateResponse(nyTimesAPI, artistName)
                     val abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
-                    val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
                     if (abstract == null) {
                         infoArtista = "No Results"
                     } else {
                         infoArtista = abstract.asString.replace("\\n", "\n")
                         infoArtista = textToHtml(infoArtista, artistName)
-                        dataBase.saveArtist(artistName, infoArtista)
+                        saveArtistOnDatabase(artistName, infoArtista)
                     }
-                    val urlString = url.asString
-                    findViewById<View>(R.id.openUrlButton).setOnClickListener {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(urlString)
-                        startActivity(intent)
-                    }
+                    setButtonClickListener(infoArtista)
                 } catch (e1: IOException) {
                     Log.e("TAG", "Error $e1")
                     e1.printStackTrace()
                 }
             }
-            val imageUrl = IMAGE_URL
-            Log.e("TAG", "Get Image from $imageUrl")
-            val finalText = infoArtista
-            runOnUiThread {
-                Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView) as ImageView)
-                textPane2.text = Html.fromHtml(finalText)
-            }
+            setImage(infoArtista)
         }.start()
+    }
+
+    private fun setImage(infoArtista: String?) {
+        Log.e("TAG", "Get Image from $IMAGE_URL")
+        runOnUiThread {
+            Picasso.get().load(IMAGE_URL).into(findViewById<View>(R.id.imageView) as ImageView)
+            textPane2.text = Html.fromHtml(infoArtista)
+        }
+    }
+
+    private fun saveArtistOnDatabase(artistName: String?, infoArtista: String) {
+        dataBase.saveArtist(artistName, infoArtista)
+    }
+
+    private fun setButtonClickListener(artistName: String?) {
+        val response = generateResponse(nyTimesAPI, artistName)
+        val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
+        val urlString = url.asString
+        findViewById<View>(R.id.openUrlButton).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(urlString)
+            startActivity(intent)
+        }
     }
 
     private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
