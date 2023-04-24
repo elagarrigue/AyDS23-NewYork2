@@ -28,9 +28,9 @@ private const val IMAGE_URL =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
 
 class OtherInfoWindow : AppCompatActivity() {
+
     private lateinit var textPane2: TextView
     private lateinit var dataBase: DataBase
-
     private val retrofit = createRetroFit()
     private val nyTimesAPI = createAPI(retrofit)
 
@@ -116,23 +116,18 @@ class OtherInfoWindow : AppCompatActivity() {
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
-    companion object {
-
-        fun textToHtml(text: String, term: String?): String {
-            val builder = StringBuilder()
-            builder.append("<html>")
-            builder.append("<div width=").append(HTML_DIV_WIDTH).append(">")
-            builder.append("<font face=").append(HTML_FONT_FACE).append(">")
-            val textWithBold = text
-                .replace("'", " ")
-                .replace("\n", "<br>")
-                .replace(
-                    "(?i)$term".toRegex(),
-                    "<b>" + term!!.uppercase(Locale.getDefault()) + "</b>"
-                )
-            builder.append(textWithBold)
-            builder.append("</font></div></html>")
-            return builder.toString()
-        }
+    private fun textToHtml(text: String, term: String?): String {
+        val builder = StringBuilder()
+        builder.append("<html>")
+        builder.append("<div width=").append(HTML_DIV_WIDTH).append(">")
+        builder.append("<font face=").append(HTML_FONT_FACE).append(">")
+        val textWithBold = text
+            .replace("'", " ")
+            .replace("\n", "<br>")
+            .replace("(?i)$term".toRegex(), "<b>" + term!!.uppercase(Locale.getDefault()) + "</b>")
+        builder.append(textWithBold)
+        builder.append("</font></div></html>")
+        return builder.toString()
     }
+
 }
