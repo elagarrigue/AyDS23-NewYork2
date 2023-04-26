@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,7 +28,7 @@ private const val IMAGE_URL =
 
 class OtherInfoWindow : AppCompatActivity() {
 
-    private lateinit var textPane2: TextView
+    private lateinit var textInfoWindow: TextView
     private lateinit var dataBase: DataBase
     private val retrofit = createRetroFit()
     private val nyTimesAPI = createAPI(retrofit)
@@ -48,19 +47,17 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun initViewInfo() {
         setContentView(R.layout.activity_other_info)
-        textPane2 = findViewById(R.id.textPane2)
+        textInfoWindow = findViewById(R.id.textPane2)
     }
 
     private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject {
         val callResponse: Response<String> = nyTimesAPI.getArtistInfo(artistName).execute()
-        Log.e("TAG", "JSON" + callResponse.body())
         val gson = Gson()
         val jObj = gson.fromJson(callResponse.body(), JsonObject::class.java)
         return jObj["response"].asJsonObject
     }
 
     private fun loadArtistInfo(artistName: String?) {
-        Log.e("TAG", "artistName $artistName")
         Thread {
             var infoArtista: String? = dataBase.getInfo(artistName)
             if (infoArtista != null) {
@@ -78,7 +75,6 @@ class OtherInfoWindow : AppCompatActivity() {
                     }
                     setButtonClickListener(infoArtista)
                 } catch (e1: IOException) {
-                    Log.e("TAG", "Error $e1")
                     e1.printStackTrace()
                 }
             }
@@ -87,10 +83,9 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun setImage(infoArtista: String?) {
-        Log.e("TAG", "Get Image from $IMAGE_URL")
         runOnUiThread {
             Picasso.get().load(IMAGE_URL).into(findViewById<View>(R.id.imageView) as ImageView)
-            textPane2.text = Html.fromHtml(infoArtista)
+            textInfoWindow.text = Html.fromHtml(infoArtista)
         }
     }
 
@@ -117,17 +112,18 @@ class OtherInfoWindow : AppCompatActivity() {
         .build()
 
     private fun textToHtml(text: String, term: String?): String {
-        val builder = StringBuilder()
-        builder.append("<html>")
-        builder.append("<div width=").append(HTML_DIV_WIDTH).append(">")
-        builder.append("<font face=").append(HTML_FONT_FACE).append(">")
-        val textWithBold = text
-            .replace("'", " ")
-            .replace("\n", "<br>")
-            .replace("(?i)$term".toRegex(), "<b>" + term!!.uppercase(Locale.getDefault()) + "</b>")
-        builder.append(textWithBold)
-        builder.append("</font></div></html>")
-        return builder.toString()
+        return with(StringBuilder()) {
+            append("<html>")
+            append("<div width=").append(HTML_DIV_WIDTH).append(">")
+            append("<font face=").append(HTML_FONT_FACE).append(">")
+            val textWithBold = text
+                .replace("'", " ")
+                .replace("\n", "<br>")
+                .replace("(?i)$term".toRegex(), "<b>" + term!!.uppercase(Locale.getDefault()) + "</b>")
+            append(textWithBold)
+            append("</font></div></html>")
+            toString()
+        }
     }
 
 }
