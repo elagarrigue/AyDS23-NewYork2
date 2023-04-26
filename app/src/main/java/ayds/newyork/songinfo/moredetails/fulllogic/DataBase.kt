@@ -8,6 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
 class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", null, 1) {
+    private val TABLE = "artist"
+    private val PROJECTION = arrayOf("id", "artist", "info")
+    private val SELECTION = "artist  = ?"
+    private val ORDER = "artist DESC"
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "create table artists (id INTEGER PRIMARY KEY AUTOINCREMENT, artist string, info string, source integer)"
@@ -38,30 +43,25 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", nu
 
     private fun createCursor(dbHelper: DataBase, artist: String?): Cursor {
         return dbHelper.readableDatabase.query(
-            "artists",
-            constructProjection(),
-            "artist  = ?",
+            TABLE,
+            PROJECTION,
+            SELECTION,
             arrayOf(artist),
             null,
             null,
-            "artist DESC"
+            ORDER
         )
     }
 
-    private fun constructProjection() = arrayOf("id", "artist", "info")
-
     private fun cursorIterator(cursor: Cursor): MutableList<String>{
         val items: MutableList<String> = ArrayList()
-
         while (cursor.moveToNext()) {
             val info = cursor.getString(
                 cursor.getColumnIndexOrThrow("info")
             )
             items.add(info)
         }
-
         cursor.close()
-
         return items
     }
 }
