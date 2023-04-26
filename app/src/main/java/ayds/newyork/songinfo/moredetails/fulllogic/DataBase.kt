@@ -12,7 +12,6 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", nu
         db.execSQL(
             "create table artists (id INTEGER PRIMARY KEY AUTOINCREMENT, artist string, info string, source integer)"
         )
-        Log.i("DB", "DB created")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
@@ -24,10 +23,11 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, "dictionary.db", nu
     private fun createArtistWithValues(artist: String?, info: String): ContentValues {
         val values = ContentValues()
 
-        values.put("artist", artist)
-        values.put("info", info)
-        values.put("source", 1)
-
+        with(values){
+            put("artist", artist)
+            put("info", info)
+            put("source", 1)
+        }
         return values
     }
 
