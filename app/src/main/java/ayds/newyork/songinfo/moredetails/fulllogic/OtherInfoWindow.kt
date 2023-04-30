@@ -69,27 +69,30 @@ class OtherInfoWindow : AppCompatActivity() {
     }
     private fun loadArtistInfo(artistName: String?) {
         Thread {
-            var infoArtist: String? = getInfoDataBase(artistName)
-            if (infoArtist != null) {
-                infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
-            } else {
-                try {
-                    val response = generateResponse(nyTimesAPI, artistName)
-                    val abstract = getAsJsonObject(response)
-                    if (abstract == null) {
-                        infoArtist = NO_RESULTS
-                    } else {
-                        infoArtist = updateInfoArtist(abstract, artistName)
-                        saveArtistOnDatabase(artistName, infoArtist)
-                    }
-                    val url = getURL(infoArtist)
-                    setButtonClickListener(url)
-                } catch (e1: IOException) {
-                    e1.printStackTrace()
-                }
-            }
-            setImage(infoArtist)
+            repositoryImplementation(artistName)
         }.start()
+    }
+    private fun repositoryImplementation(artistName: String?){
+        var infoArtist: String? = getInfoDataBase(artistName)
+        if (infoArtist != null) {
+            infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
+        } else {
+            try {
+                val response = generateResponse(nyTimesAPI, artistName)
+                val abstract = getAsJsonObject(response)
+                if (abstract == null) {
+                    infoArtist = NO_RESULTS
+                } else {
+                    infoArtist = updateInfoArtist(abstract, artistName)
+                    saveArtistOnDatabase(artistName, infoArtist)
+                }
+                val url = getURL(infoArtist)
+                setButtonClickListener(url)
+            } catch (e1: IOException) {
+                e1.printStackTrace()
+            }
+        }
+        setImage(infoArtist)
     }
     private fun updateInfoArtist(abstract: JsonElement, artistName: String?) : String{
         val infoArtist = abstract.asString.replace("\\n", "\n")
