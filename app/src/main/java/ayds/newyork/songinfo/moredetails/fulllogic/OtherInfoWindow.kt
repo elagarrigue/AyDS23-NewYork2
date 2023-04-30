@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
 import retrofit2.Response
@@ -34,6 +35,9 @@ private const val CLOSE_LABEL_WORD_BLACK = "</b>"
 private const val CLOSE_LABEL_HTML = "</html>"
 private const val CLOSE_LABEL_DIV = "</div>"
 private const val CLOSE_LABEL_FONT = "</font>"
+private const val NO_RESULTS = "No Results"
+private const val WEB_URL = "web_url"
+private const val DOCS = "docs"
 class OtherInfoWindow : AppCompatActivity() {
     private lateinit var textInfoWindow: TextView
     private lateinit var dataBase: DataBase
@@ -65,58 +69,61 @@ class OtherInfoWindow : AppCompatActivity() {
     }
     private fun loadArtistInfo(artistName: String?) {
         Thread {
-            var infoArtista: String? = dataBase.getInfo(artistName)
-            if (infoArtista != null) {
-                infoArtista = "$IN_LOCAL_REPOSITORY$infoArtista"
+            var infoArtist: String? = getInfoDataBase(artistName)
+            if (infoArtist != null) {
+                infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
             } else {
                 try {
                     val response = generateResponse(nyTimesAPI, artistName)
-                    val abstract = response["docs"].asJsonArray[0].asJsonObject["abstract"]
+                    val abstract = getAsJsonObject(response)
                     if (abstract == null) {
-                        infoArtista = "No Results"
+                        infoArtist = NO_RESULTS
                     } else {
-                        infoArtista = abstract.asString.replace("\\n", "\n")
-                        infoArtista = textToHtml(infoArtista, artistName)
-                        saveArtistOnDatabase(artistName, infoArtista)
+                        infoArtist = updateInfoArtist(abstract, artistName)
+                        saveArtistOnDatabase(artistName, infoArtist)
                     }
-                    setButtonClickListener(infoArtista)
+                    val url = getURL(infoArtist)
+                    setButtonClickListener(url)
                 } catch (e1: IOException) {
                     e1.printStackTrace()
                 }
             }
-            setImage(infoArtista)
+            setImage(infoArtist)
         }.start()
     }
-
-    private fun setImage(infoArtista: String?) {
+    private fun updateInfoArtist(abstract: JsonElement, artistName: String?) : String{
+        val infoArtist = abstract.asString.replace("\\n", "\n")
+        return textToHtml(infoArtist, artistName)
+    }
+    private fun getAsJsonObject(response: JsonObject) = response["docs"].asJsonArray[0].asJsonObject["abstract"]
+    private fun getInfoDataBase(artistName: String?) = dataBase.getInfo(artistName)
+    @Suppress("DEPRECATION")
+    private fun setImage(infoArtist: String?) {
         runOnUiThread {
-            Picasso.get().load(IMAGE_URL).into(findViewById<View>(R.id.imageView) as ImageView)
-            textInfoWindow.text = Html.fromHtml(infoArtista)
+            val imageView = findViewById<ImageView>(R.id.imageView)
+            Picasso.get().load(IMAGE_URL).into(imageView)
+            textInfoWindow.text = Html.fromHtml(infoArtist)
         }
     }
-
-    private fun saveArtistOnDatabase(artistName: String?, infoArtista: String) {
-        dataBase.saveArtist(artistName, infoArtista)
+    private fun saveArtistOnDatabase(artistName: String?, infoArtist: String) {
+        dataBase.saveArtist(artistName, infoArtist)
     }
-
-    private fun setButtonClickListener(artistName: String?) {
-        val response = generateResponse(nyTimesAPI, artistName)
-        val url = response["docs"].asJsonArray[0].asJsonObject["web_url"]
-        val urlString = url.asString
+    private fun getURL(infoArtist: String?): String {
+        val response = generateResponse(nyTimesAPI, infoArtist)
+        return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
+    }
+    private fun setButtonClickListener(urlString: String) {
         findViewById<View>(R.id.openUrlButton).setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(urlString)
             startActivity(intent)
         }
     }
-
     private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
-
     private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
-
     private fun textToHtml(text: String, term: String?): String {
         return with(StringBuilder()) {
             append(OPEN_LABEL_HTML)
@@ -131,5 +138,4 @@ class OtherInfoWindow : AppCompatActivity() {
             toString()
         }
     }
-
 }
