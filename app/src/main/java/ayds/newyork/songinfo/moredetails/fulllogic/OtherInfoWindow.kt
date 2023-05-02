@@ -186,5 +186,5 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    class ArtistData(val info: String?, val url: String, val isInDatabase: Boolean)
+    internal class ArtistData(val info: String?, val url: String, val isInDatabase: Boolean)
 }
