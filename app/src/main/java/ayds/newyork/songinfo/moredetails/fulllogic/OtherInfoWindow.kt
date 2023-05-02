@@ -147,9 +147,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getURL(infoArtist: String?): String {
-        println(infoArtist)
         val response = generateResponse(nyTimesAPI, infoArtist)
-        println(response)
         return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
 
