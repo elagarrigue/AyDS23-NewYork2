@@ -24,9 +24,7 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    fun saveArtist(artist: String?, info: String) =
-        this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist, info))
-
+    fun saveArtist(artist: String?, info: String) = this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist, info))
 
     private fun createArtistWithValues(artist: String?, info: String): ContentValues {
         val values = ContentValues()
