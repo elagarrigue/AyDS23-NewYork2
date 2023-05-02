@@ -3,7 +3,7 @@ package ayds.newyork.songinfo.moredetails.fulllogic
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
+import androidx.core.text.HtmlCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -46,14 +46,19 @@ class OtherInfoWindow : AppCompatActivity() {
     private lateinit var dataBase: DataBase
     private val retrofit = createRetroFit()
     private val nyTimesAPI = createAPI(retrofit)
-    private val artistName = intent.getStringExtra(ARTIST_NAME)
+    private lateinit var artistName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
         initViewInfo()
         initDataBase()
+        obtainArtistName()
         loadArtistInfo(artistName)
+    }
+
+    private fun obtainArtistName() {
+        artistName = intent.getStringExtra(ARTIST_NAME)!!
     }
 
     private fun initDataBase() {
@@ -80,31 +85,30 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun loadArtistInfo(artistName: String?) {
         Thread {
-            repositoryImplementation(artistName)
+            val artistData = getArtistInfoFromDatabaseOrAPI(artistName)
+            if (!artistData.isInDatabase && artistData.info != null)
+                saveArtistOnDatabase(artistName, artistData.info)
+            setButtonClickListener(artistData.url)
+            setImage(artistData.info)
         }.start()
     }
 
-    private fun repositoryImplementation(artistName: String?) {
+    private fun getArtistInfoFromDatabaseOrAPI(artistName: String?): ArtistData {
         var infoArtist: String? = getInfoDataBase(artistName)
         if (infoArtist != null) {
             infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
         } else {
             try {
-                val response = generateResponse(nyTimesAPI, artistName)
-                val abstract = getAsJsonObject(response)
-                if (abstract == null) {
-                    infoArtist = NO_RESULTS
-                } else {
-                    infoArtist = updateInfoArtist(abstract, artistName)
-                    saveArtistOnDatabase(artistName, infoArtist)
-                }
-                val url = getURL(infoArtist)
-                setButtonClickListener(url)
+                infoArtist = generateFormattedResponse(nyTimesAPI, artistName)
             } catch (e1: IOException) {
                 e1.printStackTrace()
             }
         }
-        setImage(infoArtist)
+        return ArtistData(infoArtist, getURL(infoArtist), isInDatabase(infoArtist))
+    }
+
+    private fun isInDatabase(infoArtist: String?): Boolean {
+        return infoArtist?.contains("[*]") ?: false
     }
 
     private fun updateInfoArtist(abstract: JsonElement, artistName: String?): String {
@@ -112,17 +116,27 @@ class OtherInfoWindow : AppCompatActivity() {
         return textToHtml(infoArtist, artistName)
     }
 
+    private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
+        val response = generateResponse(api, nameArtist)
+        val abstract = getAsJsonObject(response)
+        return if (abstract == null)
+            NO_RESULTS
+        else
+            updateInfoArtist(abstract, nameArtist)
+    }
+
     private fun getAsJsonObject(response: JsonObject) =
         response["docs"].asJsonArray[0].asJsonObject["abstract"]
 
     private fun getInfoDataBase(artistName: String?) = dataBase.getInfo(artistName)
 
-    @Suppress("DEPRECATION")
     private fun setImage(infoArtist: String?) {
         runOnUiThread {
             val imageView = findViewById<ImageView>(R.id.imageView)
             Picasso.get().load(IMAGE_URL).into(imageView)
-            textInfoWindow.text = Html.fromHtml(infoArtist)
+            if (infoArtist != null)
+                textInfoWindow.text =
+                    HtmlCompat.fromHtml(infoArtist, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
 
@@ -166,4 +180,6 @@ class OtherInfoWindow : AppCompatActivity() {
             toString()
         }
     }
+
+    class ArtistData(val info: String?, val url: String, val isInDatabase: Boolean)
 }
