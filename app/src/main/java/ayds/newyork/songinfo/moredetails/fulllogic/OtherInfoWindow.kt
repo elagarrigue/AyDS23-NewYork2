@@ -95,25 +95,18 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistInfoFromDatabaseOrAPI(artistName: String?): ArtistData {
         var infoArtist: String? = getInfoDataBase(artistName)
+        var url = ""
         if (infoArtist != null) {
             infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
         } else {
             try {
                 infoArtist = generateFormattedResponse(nyTimesAPI, artistName)
+                url = getURL(infoArtist)
             } catch (e1: IOException) {
                 e1.printStackTrace()
             }
         }
-        return ArtistData(infoArtist, getURL(infoArtist), isInDatabase(infoArtist))
-    }
-
-    private fun isInDatabase(infoArtist: String?): Boolean {
-        return infoArtist?.contains("[*]") ?: false
-    }
-
-    private fun updateInfoArtist(abstract: JsonElement, artistName: String?): String {
-        val infoArtist = abstract.asString.replace("\\n", "\n")
-        return textToHtml(infoArtist, artistName)
+        return ArtistData(infoArtist, url, isInDatabase(infoArtist))
     }
 
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
@@ -123,6 +116,15 @@ class OtherInfoWindow : AppCompatActivity() {
             NO_RESULTS
         else
             updateInfoArtist(abstract, nameArtist)
+    }
+
+    private fun isInDatabase(infoArtist: String?): Boolean {
+        return infoArtist?.contains("[*]") ?: false
+    }
+
+    private fun updateInfoArtist(abstract: JsonElement, artistName: String?): String {
+        val infoArtist = abstract.asString.replace("\\n", "\n")
+        return textToHtml(infoArtist, artistName)
     }
 
     private fun getAsJsonObject(response: JsonObject) =
@@ -145,7 +147,9 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getURL(infoArtist: String?): String {
+        println(infoArtist)
         val response = generateResponse(nyTimesAPI, infoArtist)
+        println(response)
         return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
 
@@ -158,6 +162,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
+
     private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)
         .addConverterFactory(ScalarsConverterFactory.create())
