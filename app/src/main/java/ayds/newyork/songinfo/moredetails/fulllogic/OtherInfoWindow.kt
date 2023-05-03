@@ -41,6 +41,7 @@ private const val NO_RESULTS = "No Results"
 private const val WEB_URL = "web_url"
 private const val DOCS = "docs"
 
+@Suppress("KotlinConstantConditions")
 class OtherInfoWindow : AppCompatActivity() {
     private lateinit var textInfoWindow: TextView
     private lateinit var dataBase: DataBase
@@ -54,7 +55,7 @@ class OtherInfoWindow : AppCompatActivity() {
         initViewInfo()
         initDataBase()
         obtainArtistName()
-        loadArtistInfo(artistName)
+        initThreadLoadArtistInfo()
     }
 
     private fun obtainArtistName() {
@@ -83,29 +84,30 @@ class OtherInfoWindow : AppCompatActivity() {
         return gson.fromJson(callResponse.body(), JsonObject::class.java)
     }
 
-    private fun loadArtistInfo(artistName: String?) {
-        Thread {
-            val artistData = getArtistInfoFromDatabaseOrAPI(artistName)
-            if (!artistData.isInDatabase && artistData.info != null)
-                saveArtistOnDatabase(artistName, artistData.info)
-            setButtonClickListener(artistData.url)
-            setImage(artistData.info)
+    private fun initThreadLoadArtistInfo(){
+        Thread{
+            loadArtistInfo()
         }.start()
     }
 
-    private fun getArtistInfoFromDatabaseOrAPI(artistName: String?): ArtistData {
+    private fun loadArtistInfo() {
+        val artistData = getArtistInfoFromDatabaseOrAPI()
+        if (!artistData.isInDatabase && artistData.info != null)
+            saveArtistOnDatabase(artistData.info)
+        setButtonClickListener(artistData.url)
+        setImage(artistData.info)
+    }
+
+    private fun getArtistInfoFromDatabaseOrAPI(): ArtistData {
         var infoArtist: String? = getInfoDataBase(artistName)
-        var url = ""
-        if (infoArtist != null) {
-            infoArtist = "$IN_LOCAL_REPOSITORY$infoArtist"
-        } else {
+        if (infoArtist == null) {
             try {
                 infoArtist = generateFormattedResponse(nyTimesAPI, artistName)
-                url = getURL(infoArtist)
             } catch (e1: IOException) {
                 e1.printStackTrace()
             }
         }
+        val url = if(infoArtist != null) "" else getURL(infoArtist)
         return ArtistData(infoArtist, url, isInDatabase(infoArtist))
     }
 
@@ -122,7 +124,8 @@ class OtherInfoWindow : AppCompatActivity() {
         return infoArtist?.contains("[*]") ?: false
     }
 
-    private fun updateInfoArtist(abstract: JsonElement, artistName: String?): String {
+    private fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
+        artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
         val infoArtist = abstract.asString.replace("\\n", "\n")
         return textToHtml(infoArtist, artistName)
     }
@@ -142,7 +145,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    private fun saveArtistOnDatabase(artistName: String?, infoArtist: String) {
+    private fun saveArtistOnDatabase(infoArtist: String) {
         dataBase.saveArtist(artistName, infoArtist)
     }
 
