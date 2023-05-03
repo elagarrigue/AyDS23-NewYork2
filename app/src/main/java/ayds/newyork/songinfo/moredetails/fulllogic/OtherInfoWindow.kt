@@ -86,14 +86,19 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun initThreadLoadArtistInfo(){
         Thread{
-            loadArtistInfo()
+            var artistData = loadArtistInfo()
+            setView(artistData)
         }.start()
     }
 
-    private fun loadArtistInfo() {
+    private fun loadArtistInfo():ArtistData {
         val artistData = getArtistInfoFromDatabaseOrAPI()
         if (!artistData.isInDatabase && artistData.info != null)
             saveArtistOnDatabase(artistData.info)
+        return artistData
+    }
+
+    private fun setView(artistData: ArtistData){
         setButtonClickListener(artistData.url)
         setImage(artistData.info)
     }
@@ -108,7 +113,7 @@ class OtherInfoWindow : AppCompatActivity() {
             }
         }
         val url = if(infoArtist != null) "" else getURL(infoArtist)
-        return ArtistData(infoArtist, url, isInDatabase(infoArtist))
+        return ArtistData(infoArtist, url, isInDatabase(artistName))
     }
 
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
@@ -120,9 +125,7 @@ class OtherInfoWindow : AppCompatActivity() {
             updateInfoArtist(abstract, nameArtist)
     }
 
-    private fun isInDatabase(infoArtist: String?): Boolean {
-        return infoArtist?.contains("[*]") ?: false
-    }
+    private fun isInDatabase(artistName: String?): Boolean = dataBase.getInfo(artistName) != null
 
     private fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
         artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
