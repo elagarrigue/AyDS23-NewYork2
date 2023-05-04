@@ -84,35 +84,46 @@ class OtherInfoWindow : AppCompatActivity() {
         return gson.fromJson(callResponse.body(), JsonObject::class.java)
     }
 
-    private fun initThreadLoadArtistInfo(){
-        Thread{
-            var artistData = loadArtistInfo()
+    private fun initThreadLoadArtistInfo() {
+        Thread {
+            val artistData = getArtistData()
             setView(artistData)
         }.start()
     }
 
-    private fun loadArtistInfo():ArtistData {
-        val artistData = getArtistInfoFromDatabaseOrAPI()
-        if (!artistData.isInDatabase && artistData.info != null)
-            saveArtistOnDatabase(artistData.info)
+    private fun getArtistData(): ArtistData {
+        var artistData = getArtistInfoFromDatabase() //busco en DB ONLY
+        //si esta en bd marco como local y retorno
+        if (artistData.isInDatabase)
+            return artistData
+        else { //si no esta en bd, la busco en api
+            artistData = getArtistInfoFromAPI()
+            if (artistData.info != null) {
+                saveArtistOnDatabase(artistData.info!!)
+            }
+        }
         return artistData
     }
 
-    private fun setView(artistData: ArtistData){
+    private fun setView(artistData: ArtistData) {
         setButtonClickListener(artistData.url)
         setImage(artistData.info)
     }
 
-    private fun getArtistInfoFromDatabaseOrAPI(): ArtistData {
-        var infoArtist: String? = getInfoDataBase(artistName)
-        if (infoArtist == null) {
-            try {
-                infoArtist = generateFormattedResponse(nyTimesAPI, artistName)
-            } catch (e1: IOException) {
-                e1.printStackTrace()
-            }
+    private fun getArtistInfoFromDatabase(): ArtistData {
+        val infoArtist: String? = getInfoDataBase(artistName)
+        val url = if (infoArtist != null) "" else getURL(infoArtist)
+        return ArtistData(infoArtist, url, isInDatabase(artistName))
+    }
+
+    private fun getArtistInfoFromAPI(): ArtistData {
+        var infoArtist: String? = null
+        try {
+            infoArtist = generateFormattedResponse(nyTimesAPI, artistName)
+        } catch (e1: IOException) {
+            e1.printStackTrace()
         }
-        val url = if(infoArtist != null) "" else getURL(infoArtist)
+        val url = if (infoArtist != null) "" else getURL(infoArtist)
         return ArtistData(infoArtist, url, isInDatabase(artistName))
     }
 
