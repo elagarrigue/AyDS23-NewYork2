@@ -123,7 +123,7 @@ class OtherInfoWindow : AppCompatActivity() {
         return if(infoArtist == null)
             null
         else {
-            val url = getURL(infoArtist, artistName)
+            val url = getURL(artistName)
             ArtistData(infoArtist, url, true)
         }
     }
@@ -135,7 +135,7 @@ class OtherInfoWindow : AppCompatActivity() {
         } catch (e1: IOException) {
             e1.printStackTrace()
         }
-        val url = if (infoArtist == null) "" else getURL(infoArtist, artistName)
+        val url = if (infoArtist == null) "" else getURL(artistName)
         return ArtistData(infoArtist, url, false)
     }
 
@@ -167,7 +167,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    private fun getURL(infoArtist: String?, artistName: String?): String {
+    private fun getURL(artistName: String?): String {
         val response = generateResponse(nyTimesAPI, artistName)
         return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
