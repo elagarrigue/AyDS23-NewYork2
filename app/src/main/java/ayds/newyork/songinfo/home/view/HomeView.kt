@@ -16,8 +16,8 @@ import ayds.newyork.songinfo.home.model.entities.Song.EmptySong
 import ayds.newyork.songinfo.home.model.entities.Song
 import ayds.newyork.songinfo.home.model.entities.Song.SpotifySong
 import ayds.newyork.songinfo.home.view.HomeUiState.Companion.DEFAULT_IMAGE
-import ayds.newyork.songinfo.moredetails.fulllogic.ARTIST_NAME
-import ayds.newyork.songinfo.moredetails.fulllogic.OtherInfoWindow
+import ayds.newyork.songinfo.moredetails.ARTIST_NAME
+import ayds.newyork.songinfo.moredetails.OtherInfoWindow
 import ayds.newyork.songinfo.utils.UtilsInjector
 import ayds.newyork.songinfo.utils.navigation.NavigationUtils
 import ayds.newyork.songinfo.utils.view.ImageLoader

@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.fulllogic
+package ayds.newyork.songinfo.moredetails.model
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
+import ayds.newyork.songinfo.moredetails.model.repository.external.NYTimesAPI
+import ayds.newyork.songinfo.moredetails.model.repository.local.DataBase
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -184,7 +186,8 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
+    private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(
+        NYTimesAPI::class.java)
 
     private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)
