@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.repository.local
+package ayds.newyork.songinfo.moredetails.fulllogic
 
 import android.content.ContentValues
 import android.content.Context
