@@ -99,7 +99,6 @@ class OtherInfoWindow : AppCompatActivity() {
                 try {
                     artistData = getArtistInfoFromAPI()
                     val artistInfo = getInfoDataBase()!!
-                    markArtistInDB(artistData)
                     artistData.let {
                         dataBase.saveArtist(artistName, artistInfo)
                     }
@@ -111,12 +110,8 @@ class OtherInfoWindow : AppCompatActivity() {
         return artistData!!
     }
 
-    private fun markArtistInDB(artistData: ArtistData){
-        artistData.isInDatabase = true
-    }
-
     private fun markArtistAsLocal(artistData: ArtistData){
-        artistData.isLocallyStored = true
+        artistData.isInDatabase = true
     }
 
     private fun setView(artistData: ArtistData) {
@@ -126,8 +121,12 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistInfoFromDatabase(): ArtistData? {
         val infoArtist: String? = dataBase.getInfo(artistName)
-        val url = if (infoArtist != null) "" else getURL(infoArtist)
-        return ArtistData(infoArtist, url, infoArtist != null, false)
+        return if(infoArtist == null)
+            null
+        else {
+            val url = getURL(infoArtist)
+            ArtistData(infoArtist, url, true)
+        }
     }
 
     private fun getArtistInfoFromAPI(): ArtistData {
@@ -137,8 +136,8 @@ class OtherInfoWindow : AppCompatActivity() {
         } catch (e1: IOException) {
             e1.printStackTrace()
         }
-        val url = if (infoArtist != null) "" else getURL(infoArtist)
-        return ArtistData(infoArtist, url, false, false)
+        val url = if (infoArtist == null) "" else getURL(infoArtist)
+        return ArtistData(infoArtist, url, false)
     }
 
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
@@ -209,5 +208,5 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean, var isLocallyStored: Boolean)
+    internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean)
 }
