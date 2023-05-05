@@ -92,17 +92,31 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getArtistData(): ArtistData {
-        var artistData = getArtistInfoFromDatabase() //busco en DB ONLY
-        //si esta en bd marco como local y retorno
-        if (artistData.isInDatabase)
-            return artistData
-        else { //si no esta en bd, la busco en api
-            artistData = getArtistInfoFromAPI()
-            if (artistData.info != null) {
-                saveArtistOnDatabase(artistData.info!!)
+        var artistData = getArtistInfoFromDatabase()
+        when {
+            artistData != null -> markArtistAsLocal(artistData)
+            else -> {
+                try {
+                    artistData = getArtistInfoFromAPI()
+                    val artistInfo = getInfoDataBase()!!
+                    markArtistInDB(artistData)
+                    artistData.let {
+                        dataBase.saveArtist(artistName, artistInfo)
+                    }
+                } catch (e: Exception) {
+                    artistData = null
+                }
             }
         }
-        return artistData
+        return artistData!!
+    }
+
+    private fun markArtistInDB(artistData: ArtistData){
+        artistData.isInDatabase = true
+    }
+
+    private fun markArtistAsLocal(artistData: ArtistData){
+        artistData.isLocallyStored = true
     }
 
     private fun setView(artistData: ArtistData) {
@@ -110,10 +124,10 @@ class OtherInfoWindow : AppCompatActivity() {
         setImage(artistData.info)
     }
 
-    private fun getArtistInfoFromDatabase(): ArtistData {
-        val infoArtist: String? = getInfoDataBase(artistName)
+    private fun getArtistInfoFromDatabase(): ArtistData? {
+        val infoArtist: String? = dataBase.getInfo(artistName)
         val url = if (infoArtist != null) "" else getURL(infoArtist)
-        return ArtistData(infoArtist, url, isInDatabase(artistName))
+        return ArtistData(infoArtist, url, infoArtist != null, false)
     }
 
     private fun getArtistInfoFromAPI(): ArtistData {
@@ -124,7 +138,7 @@ class OtherInfoWindow : AppCompatActivity() {
             e1.printStackTrace()
         }
         val url = if (infoArtist != null) "" else getURL(infoArtist)
-        return ArtistData(infoArtist, url, isInDatabase(artistName))
+        return ArtistData(infoArtist, url, false, false)
     }
 
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
@@ -136,8 +150,6 @@ class OtherInfoWindow : AppCompatActivity() {
             updateInfoArtist(abstract, nameArtist)
     }
 
-    private fun isInDatabase(artistName: String?): Boolean = dataBase.getInfo(artistName) != null
-
     private fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
         artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
         val infoArtist = abstract.asString.replace("\\n", "\n")
@@ -147,7 +159,7 @@ class OtherInfoWindow : AppCompatActivity() {
     private fun getAsJsonObject(response: JsonObject) =
         response["docs"].asJsonArray[0].asJsonObject["abstract"]
 
-    private fun getInfoDataBase(artistName: String?) = dataBase.getInfo(artistName)
+    private fun getInfoDataBase() = dataBase.getInfo(artistName)
 
     private fun setImage(infoArtist: String?) {
         runOnUiThread {
@@ -157,10 +169,6 @@ class OtherInfoWindow : AppCompatActivity() {
                 textInfoWindow.text =
                     HtmlCompat.fromHtml(infoArtist, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
-    }
-
-    private fun saveArtistOnDatabase(infoArtist: String) {
-        dataBase.saveArtist(artistName, infoArtist)
     }
 
     private fun getURL(infoArtist: String?): String {
@@ -201,5 +209,5 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    internal class ArtistData(val info: String?, val url: String, val isInDatabase: Boolean)
+    internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean, var isLocallyStored: Boolean)
 }
