@@ -98,12 +98,11 @@ class OtherInfoWindow : AppCompatActivity() {
             else -> {
                 try {
                     artistData = getArtistInfoFromAPI()
-                    val artistInfo = getInfoDataBase()!!
                     artistData.let {
-                        dataBase.saveArtist(artistName, artistInfo)
+                        dataBase.saveArtist(artistName, artistData.info!!)
                     }
                 } catch (e: Exception) {
-                    artistData = null
+                    e.printStackTrace()
                 }
             }
         }
@@ -157,8 +156,6 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getAsJsonObject(response: JsonObject) =
         response["docs"].asJsonArray[0].asJsonObject["abstract"]
-
-    private fun getInfoDataBase() = dataBase.getInfo(artistName)
 
     private fun setImage(infoArtist: String?) {
         runOnUiThread {
