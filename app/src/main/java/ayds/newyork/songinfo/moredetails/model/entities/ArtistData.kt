@@ -1,13 +1,14 @@
 package ayds.newyork.songinfo.moredetails.model.entities
 
-sealed class Artist {
 
-    data class ArtistData(
+sealed class ArtistData {
+
+    data class ArtistWithData(
         val info: String?,
         val url: String,
-        val isInDataBase: Boolean,
-        val isLocallyStored: Boolean
-    ): Artist()
+        var isInDatabase: Boolean,
+    ): ArtistData()
 
-    object EmptyArtist : Artist()
+
+    object EmptyArtistData : ArtistData()
 }

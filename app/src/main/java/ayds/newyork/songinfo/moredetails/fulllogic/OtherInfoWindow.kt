@@ -18,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
+import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
 const val ARTIST_NAME = "artistName"
@@ -100,7 +101,8 @@ class OtherInfoWindow : AppCompatActivity() {
                 try {
                     artistData = getArtistInfoFromAPI()
                     artistData.let {
-                        dataBase.saveArtist(artistName, artistData.info!!)
+                        if(artistData is ArtistData.ArtistWithData)
+                            dataBase.saveArtist(artistName, artistData.info!!)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -111,12 +113,15 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun markArtistAsLocal(artistData: ArtistData){
-        artistData.isInDatabase = true
+        if(artistData is ArtistData.ArtistWithData)
+            artistData.isInDatabase = true
     }
 
     private fun setView(artistData: ArtistData) {
-        setButtonClickListener(artistData.url)
-        setImage(artistData.info)
+        if(artistData is ArtistData.ArtistWithData) {
+            setButtonClickListener(artistData.url)
+            setImage(artistData.info)
+        }
     }
 
     private fun getArtistInfoFromDatabase(): ArtistData? {
@@ -125,7 +130,7 @@ class OtherInfoWindow : AppCompatActivity() {
             null
         else {
             val url = getURL(artistName)
-            ArtistData(infoArtist, url, true)
+            ArtistData.ArtistWithData(infoArtist, url, true)
         }
     }
 
@@ -137,7 +142,7 @@ class OtherInfoWindow : AppCompatActivity() {
             e1.printStackTrace()
         }
         val url = if (infoArtist == null) "" else getURL(artistName)
-        return ArtistData(infoArtist, url, false)
+        return ArtistData.ArtistWithData(infoArtist, url, false)
     }
 
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
@@ -206,5 +211,5 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean)
+    //internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean)
 }
