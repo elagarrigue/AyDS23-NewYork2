@@ -8,18 +8,22 @@ import android.database.sqlite.SQLiteOpenHelper
 import ayds.newyork.songinfo.moredetails.model.repository.local.ArtistLocalStorage
 
 private const val DATABASE_NAME = "dictionary.db"
-private const val ARTISTS_TABLE_NAME = "artists"
-private const val COLUMN_ID = "id"
-private const val COLUMN_ARTIST = "artist"
-private const val COLUMN_ARTIST_INFO = "info"
-private const val COLUMN_SOURCE = "source"
-private const val SOURCE_VALUE = 1
-private const val ARTIST_TABLE_CREATION_QUERY = "create table $ARTISTS_TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_ARTIST string, $COLUMN_ARTIST_INFO string, $COLUMN_SOURCE integer)"
+private const val DATABASE_VERSION = 1
 private const val SELECTION = "$COLUMN_ARTIST  = ?"
 private const val ORDER = "$COLUMN_ARTIST DESC"
 
-internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 1),
+internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
     ArtistLocalStorage {
+
+    private val projection = arrayOf(
+        COLUMN_ID,
+        COLUMN_ARTIST,
+        COLUMN_ARTIST_INFO
+    )
+
+    //Esto deberia crearse y pasarse con la creacion de la database en el inyector siguiendo analogamente lo que se hace en home
+    private val cursorToArtistDataMapper: CursorToArtistDataMapper = CursorToArtistDataMapperImpl()
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(ARTIST_TABLE_CREATION_QUERY)
     }
@@ -42,14 +46,14 @@ internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(conte
     }
 
     override fun getInfo(artist: String?): String? {
-        val items = cursorIterator(createCursor(this, artist))
+        val items = cursorToArtistDataMapper.map(createCursor(this, artist))
         return if (items.isEmpty()) null else items[0]
     }
 
     private fun createCursor(dbHelper: ArtistLocalStorageImpl, artist: String?): Cursor {
         return dbHelper.readableDatabase.query(
             ARTISTS_TABLE_NAME,
-            arrayOf(COLUMN_ID, COLUMN_ARTIST, COLUMN_ARTIST_INFO),
+            projection,
             SELECTION,
             arrayOf(artist),
             null,
