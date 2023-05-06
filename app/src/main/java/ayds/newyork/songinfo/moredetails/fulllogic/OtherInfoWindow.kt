@@ -87,11 +87,12 @@ class OtherInfoWindow : AppCompatActivity() {
     private fun initThreadLoadArtistInfo() {
         Thread {
             val artistData = getArtistData()
-            setView(artistData)
+            if(artistData != null)
+                setView(artistData)
         }.start()
     }
 
-    private fun getArtistData(): ArtistData {
+    private fun getArtistData(): ArtistData? {
         var artistData = getArtistInfoFromDatabase()
         when {
             artistData != null -> markArtistAsLocal(artistData)
@@ -106,7 +107,7 @@ class OtherInfoWindow : AppCompatActivity() {
                 }
             }
         }
-        return artistData!!
+        return artistData
     }
 
     private fun markArtistAsLocal(artistData: ArtistData){
