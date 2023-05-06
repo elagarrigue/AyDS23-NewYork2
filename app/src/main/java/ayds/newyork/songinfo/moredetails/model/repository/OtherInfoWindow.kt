@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.fulllogic
+package ayds.newyork.songinfo.moredetails.model.repository
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
+import ayds.newyork.songinfo.moredetails.model.repository.external.NYTimesAPI
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -19,6 +20,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
 import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.model.repository.local.sqldb.ArtistLocalStorageImpl
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
 const val ARTIST_NAME = "artistName"
@@ -45,7 +47,7 @@ private const val DOCS = "docs"
 @Suppress("KotlinConstantConditions")
 class OtherInfoWindow : AppCompatActivity() {
     private lateinit var textInfoWindow: TextView
-    private lateinit var dataBase: DataBase
+    private lateinit var artistLocalStorageImpl: ArtistLocalStorageImpl
     private val retrofit = createRetroFit()
     private val nyTimesAPI = createAPI(retrofit)
     private lateinit var artistName: String
@@ -64,7 +66,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun initDataBase() {
-        dataBase = DataBase(this)
+        artistLocalStorageImpl = ArtistLocalStorageImpl(this)
     }
 
     private fun initViewInfo() {
@@ -102,7 +104,7 @@ class OtherInfoWindow : AppCompatActivity() {
                     artistData = getArtistInfoFromAPI()
                     artistData.let {
                         if(artistData is ArtistData.ArtistWithData)
-                            dataBase.saveArtist(artistName, artistData.info!!)
+                            artistLocalStorageImpl.saveArtist(artistName, artistData.info!!)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -125,7 +127,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getArtistInfoFromDatabase(): ArtistData? {
-        val infoArtist: String? = dataBase.getInfo(artistName)
+        val infoArtist: String? = artistLocalStorageImpl.getInfo(artistName)
         return if(infoArtist == null)
             null
         else {
@@ -186,7 +188,8 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(NYTimesAPI::class.java)
+    private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(
+        NYTimesAPI::class.java)
 
     private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)

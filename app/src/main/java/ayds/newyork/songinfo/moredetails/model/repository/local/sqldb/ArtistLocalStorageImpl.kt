@@ -1,10 +1,11 @@
-package ayds.newyork.songinfo.moredetails.fulllogic
+package ayds.newyork.songinfo.moredetails.model.repository.local.sqldb
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import ayds.newyork.songinfo.moredetails.model.repository.local.ArtistLocalStorage
 
 private const val DATABASE_NAME = "dictionary.db"
 private const val ARTISTS_TABLE_NAME = "artists"
@@ -17,14 +18,17 @@ private const val ARTIST_TABLE_CREATION_QUERY = "create table $ARTISTS_TABLE_NAM
 private const val SELECTION = "$COLUMN_ARTIST  = ?"
 private const val ORDER = "$COLUMN_ARTIST DESC"
 
-class DataBase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 1) {
+internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 1),
+    ArtistLocalStorage {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(ARTIST_TABLE_CREATION_QUERY)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    fun saveArtist(artist: String?, info: String) = this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist, info))
+    override fun saveArtist(artist: String?, info: String) {
+        this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist, info))
+    }
 
     private fun createArtistWithValues(artist: String?, info: String): ContentValues {
         val values = ContentValues()
@@ -37,12 +41,12 @@ class DataBase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return values
     }
 
-    fun getInfo(artist: String?): String? {
+    override fun getInfo(artist: String?): String? {
         val items = cursorIterator(createCursor(this, artist))
         return if (items.isEmpty()) null else items[0]
     }
 
-    private fun createCursor(dbHelper: DataBase, artist: String?): Cursor {
+    private fun createCursor(dbHelper: ArtistLocalStorageImpl, artist: String?): Cursor {
         return dbHelper.readableDatabase.query(
             ARTISTS_TABLE_NAME,
             arrayOf(COLUMN_ID, COLUMN_ARTIST, COLUMN_ARTIST_INFO),
