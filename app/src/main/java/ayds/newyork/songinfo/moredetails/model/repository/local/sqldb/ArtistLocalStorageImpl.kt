@@ -61,16 +61,4 @@ internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(conte
             ORDER
         )
     }
-
-    private fun cursorIterator(cursor: Cursor): MutableList<String>{
-        val items: MutableList<String> = ArrayList()
-        while (cursor.moveToNext()) {
-            val info = cursor.getString(
-                cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)
-            )
-            items.add(info)
-        }
-        cursor.close()
-        return items
-    }
 }
