@@ -143,7 +143,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    //esto va en NYTimesServiceImpl
+    //esto va en NYTimesToArtistResolver
     private fun getArtistInfoFromAPI(): ArtistData {
         var infoArtist: String? = null
         try {

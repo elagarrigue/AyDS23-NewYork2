@@ -1,7 +1,5 @@
 package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service
 
-import ayds.newyork.songinfo.home.model.repository.external.spotify.auth.SpotifyAccountService
-import ayds.newyork.songinfo.home.model.repository.external.spotify.tracks.SpotifyToSongResolver
 import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesAPI
 import java.io.IOException
@@ -11,7 +9,6 @@ internal class NYTimesServiceImpl(
     private val nyTimesAPI: NYTimesAPI,
     private val nyTimesToArtistResolver: NYTimesToArtistResolver,
 ) : NYTimesService {
-
     override fun getArtistInfo(artistName: String?): ArtistData {
         var infoArtist: String? = null
         try {
