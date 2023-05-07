@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes;
+package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service;
 
 
 import retrofit2.Call;

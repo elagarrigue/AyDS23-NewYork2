@@ -1,10 +1,6 @@
 package ayds.newyork.songinfo.moredetails.model.repository.local.sqldb
 
 import android.database.Cursor
-import ayds.newyork.songinfo.home.model.entities.Song
-import ayds.newyork.songinfo.home.model.repository.local.spotify.sqldb.CursorToSpotifySongMapper
-import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
-import java.sql.SQLException
 
 interface CursorToArtistDataMapper {
 

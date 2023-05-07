@@ -1,7 +1,7 @@
 package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service
 
 import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesAPI
+import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesService
 import java.io.IOException
 
 //similar a SpotifyTrackServiceImpl

@@ -1,6 +1,6 @@
 package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service
 
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesAPI
+import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesService
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 

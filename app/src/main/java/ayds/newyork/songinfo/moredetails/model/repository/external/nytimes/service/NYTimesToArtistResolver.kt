@@ -2,7 +2,6 @@ package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.serv
 
 import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.model.repository.*
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesAPI
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import retrofit2.Response
