@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.moredetails.model.repository.external.NYTimesAPI
+import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesAPI
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -73,6 +73,7 @@ class OtherInfoWindow : AppCompatActivity() {
         textInfoWindow = findViewById(R.id.textInfo)
     }
 
+    //esto va en NYTimesToArtistResolver o al menos lo del asJsonObject
     private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject {
         val callResponse = getResponse(nyTimesAPI, artistName)
         val jObj = getJson(callResponse)
@@ -82,11 +83,13 @@ class OtherInfoWindow : AppCompatActivity() {
     private fun getResponse(nyTimesAPI: NYTimesAPI, artistName: String?) =
         nyTimesAPI.getArtistInfo(artistName).execute()
 
+    //esto va en NYTimesToArtistResolver
     private fun getJson(callResponse: Response<String>): JsonObject {
         val gson = Gson()
         return gson.fromJson(callResponse.body(), JsonObject::class.java)
     }
 
+    //controller
     private fun initThreadLoadArtistInfo() {
         Thread {
             val artistData = getArtistData()
@@ -95,6 +98,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }.start()
     }
 
+    //model, repository
     private fun getArtistData(): ArtistData? {
         var artistData = getArtistInfoFromDatabase()
         when {
@@ -114,11 +118,13 @@ class OtherInfoWindow : AppCompatActivity() {
         return artistData
     }
 
+    //controller
     private fun markArtistAsLocal(artistData: ArtistData){
         if(artistData is ArtistData.ArtistWithData)
             artistData.isInDatabase = true
     }
 
+    //vista
     private fun setView(artistData: ArtistData) {
         if(artistData is ArtistData.ArtistWithData) {
             setButtonClickListener(artistData.url)
@@ -126,6 +132,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
+    //va en model
     private fun getArtistInfoFromDatabase(): ArtistData? {
         val infoArtist: String? = artistLocalStorageImpl.getInfo(artistName)
         return if(infoArtist == null)
@@ -136,6 +143,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
+    //esto va en NYTimesServiceImpl
     private fun getArtistInfoFromAPI(): ArtistData {
         var infoArtist: String? = null
         try {
@@ -147,6 +155,7 @@ class OtherInfoWindow : AppCompatActivity() {
         return ArtistData.ArtistWithData(infoArtist, url, false)
     }
 
+    //esto va en NYTimesToArtistResolver
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
         val response = generateResponse(api, nameArtist)
         val abstract = getAsJsonObject(response)
@@ -156,15 +165,18 @@ class OtherInfoWindow : AppCompatActivity() {
             updateInfoArtist(abstract, nameArtist)
     }
 
+    //esto actualiza la vista
     private fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
         artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
         val infoArtist = abstract.asString.replace("\\n", "\n")
         return textToHtml(infoArtist, artistName)
     }
 
+    //esto va en NYTimesToArtistResolver
     private fun getAsJsonObject(response: JsonObject) =
         response["docs"].asJsonArray[0].asJsonObject["abstract"]
 
+    //vista
     private fun setImage(infoArtist: String?) {
         runOnUiThread {
             val imageView = findViewById<ImageView>(R.id.imageView)
@@ -175,11 +187,13 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
+    //esto va en NYTimesToArtistResolver
     private fun getURL(artistName: String?): String {
         val response = generateResponse(nyTimesAPI, artistName)
         return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
 
+    //vista
     private fun setButtonClickListener(urlString: String) {
         findViewById<View>(R.id.openUrlButton).setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -188,14 +202,17 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
+    //NYTimesServiceInjector
     private fun createAPI(retrofit: Retrofit): NYTimesAPI = retrofit.create(
         NYTimesAPI::class.java)
 
+    //NYTimesServiceInjector
     private fun createRetroFit(): Retrofit = Retrofit.Builder()
         .baseUrl(LINK_API_NYTIMES)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
+    //view o presenter
     private fun textToHtml(text: String, term: String?): String {
         return with(StringBuilder()) {
             append(OPEN_LABEL_HTML)
@@ -214,5 +231,4 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    //internal data class ArtistData(val info: String?, val url: String, var isInDatabase: Boolean)
 }
