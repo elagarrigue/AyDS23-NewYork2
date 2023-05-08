@@ -1,6 +1,6 @@
-package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes
+package ayds.newyork.songinfo.moredetails.data.repository.external.nytimes
 
-import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 
 interface NYTimesService {
 

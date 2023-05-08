@@ -1,8 +1,8 @@
-package ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service
+package ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service
 
 
-import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesService
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.NYTimesService
 import com.google.gson.JsonObject
 import java.io.IOException
 

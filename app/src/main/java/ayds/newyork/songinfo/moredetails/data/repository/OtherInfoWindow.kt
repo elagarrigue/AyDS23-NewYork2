@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.repository
+package ayds.newyork.songinfo.moredetails.data.repository
 
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.service.NYTimesAPI
+import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesAPI
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -19,8 +19,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
-import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.model.repository.local.sqldb.ArtistLocalStorageImpl
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorageImpl
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
 const val ARTIST_NAME = "artistName"

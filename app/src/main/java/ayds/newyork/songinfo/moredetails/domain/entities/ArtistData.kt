@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.entities
+package ayds.newyork.songinfo.moredetails.domain.entities
 
 
 sealed class ArtistData {

@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.repository.local.sqldb
+package ayds.newyork.songinfo.moredetails.data.repository.local.sqldb
 
 import android.database.Cursor
 

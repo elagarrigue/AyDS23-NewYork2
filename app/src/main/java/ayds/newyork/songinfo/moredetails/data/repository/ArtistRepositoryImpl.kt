@@ -1,12 +1,9 @@
-package ayds.newyork.songinfo.moredetails.model.repository
+package ayds.newyork.songinfo.moredetails.data.repository
 
-import ayds.newyork.songinfo.moredetails.model.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.model.repository.external.nytimes.NYTimesService
-import ayds.newyork.songinfo.moredetails.model.repository.local.ArtistLocalStorage
-
-interface ArtistRepository {
-    fun getArtistData(artistName: String): ArtistData?
-}
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.NYTimesService
+import ayds.newyork.songinfo.moredetails.data.repository.local.ArtistLocalStorage
+import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 
 internal class ArtistRepositoryImpl(
     private val artistLocalStorage: ArtistLocalStorage,

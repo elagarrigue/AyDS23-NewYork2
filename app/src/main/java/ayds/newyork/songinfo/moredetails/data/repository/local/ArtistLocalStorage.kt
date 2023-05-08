@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.model.repository.local
+package ayds.newyork.songinfo.moredetails.data.repository.local
 
 interface ArtistLocalStorage {
     fun saveArtist(artist: String?, info: String)

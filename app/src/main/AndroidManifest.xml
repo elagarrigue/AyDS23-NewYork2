@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ayds.newyork.songinfo.moredetails.model.repository.OtherInfoWindow"
+        <activity android:name="ayds.newyork.songinfo.moredetails.data.repository.OtherInfoWindow"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 

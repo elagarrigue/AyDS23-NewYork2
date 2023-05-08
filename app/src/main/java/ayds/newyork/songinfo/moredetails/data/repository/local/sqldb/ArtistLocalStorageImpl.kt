@@ -1,11 +1,11 @@
-package ayds.newyork.songinfo.moredetails.model.repository.local.sqldb
+package ayds.newyork.songinfo.moredetails.data.repository.local.sqldb
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import ayds.newyork.songinfo.moredetails.model.repository.local.ArtistLocalStorage
+import ayds.newyork.songinfo.moredetails.data.repository.local.ArtistLocalStorage
 
 private const val DATABASE_NAME = "dictionary.db"
 private const val DATABASE_VERSION = 1
