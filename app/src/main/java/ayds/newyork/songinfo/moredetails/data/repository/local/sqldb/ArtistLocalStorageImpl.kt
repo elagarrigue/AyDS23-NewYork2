@@ -12,7 +12,7 @@ private const val DATABASE_VERSION = 1
 private const val SELECTION = "$COLUMN_ARTIST  = ?"
 private const val ORDER = "$COLUMN_ARTIST DESC"
 
-internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
+internal class ArtistLocalStorageImpl(context: Context, private val cursorToArtistDataMapper: CursorToArtistDataMapper) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
     ArtistLocalStorage {
 
     private val projection = arrayOf(
@@ -20,9 +20,6 @@ internal class ArtistLocalStorageImpl(context: Context) : SQLiteOpenHelper(conte
         COLUMN_ARTIST,
         COLUMN_ARTIST_INFO
     )
-
-    //Esto deberia crearse y pasarse con la creacion de la database en el inyector siguiendo analogamente lo que se hace en home
-    private val cursorToArtistDataMapper: CursorToArtistDataMapper = CursorToArtistDataMapperImpl()
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(ARTIST_TABLE_CREATION_QUERY)

@@ -7,7 +7,7 @@ interface MoreDetailsDomain{
     fun searchArtistData(artistName: String): ArtistData?
 }
 
-class MoreDetailsDomainImpl(private val repository: ArtistRepository): MoreDetailsDomain{
+internal class MoreDetailsDomainImpl(private val repository: ArtistRepository): MoreDetailsDomain{
     override fun searchArtistData(artistName: String): ArtistData? {
         return repository.getArtistData(artistName)
     }
