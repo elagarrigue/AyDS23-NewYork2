@@ -9,12 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.JsonToArtistResolver
 import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesAPI
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesToArtistResolver
+import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
@@ -29,7 +29,7 @@ private const val HTML_DIV_WIDTH = "400"
 private const val HTML_FONT_FACE = "arial"
 private const val IMAGE_URL =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
-const val PROP_RESPONSE = "response"
+private const val PROP_RESPONSE = "response"
 private const val OPEN_LABEL_HTML = "<html>"
 private const val OPEN_DIV_WIDTH = "<div width="
 private const val OPEN_FONT_FACE = "<font face="
@@ -44,26 +44,21 @@ private const val NO_RESULTS = "No Results"
 private const val WEB_URL = "web_url"
 private const val DOCS = "docs"
 
+@Suppress("KotlinConstantConditions")
 class OtherInfoWindow : AppCompatActivity() {
     private lateinit var textInfoWindow: TextView
     private lateinit var artistLocalStorageImpl: ArtistLocalStorageImpl
     private val retrofit = createRetroFit()
     private val nyTimesAPI = createAPI(retrofit)
     private lateinit var artistName: String
-    private lateinit var nyResolver : NYTimesToArtistResolver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
-        initResolver()
         initViewInfo()
         initDataBase()
         obtainArtistName()
         initThreadLoadArtistInfo()
-    }
-
-    private fun initResolver() {
-        nyResolver = JsonToArtistResolver()
     }
 
     private fun obtainArtistName() {
@@ -76,6 +71,22 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun initViewInfo() {
         textInfoWindow = findViewById(R.id.textInfo)
+    }
+
+    //esto va en NYTimesToArtistResolver o al menos lo del asJsonObject
+    private fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject {
+        val callResponse = getResponse(nyTimesAPI, artistName)
+        val jObj = getJson(callResponse)
+        return jObj[PROP_RESPONSE].asJsonObject
+    }
+
+    private fun getResponse(nyTimesAPI: NYTimesAPI, artistName: String?) =
+        nyTimesAPI.getArtistInfo(artistName).execute()
+
+    //esto va en NYTimesToArtistResolver
+    private fun getJson(callResponse: Response<String>): JsonObject {
+        val gson = Gson()
+        return gson.fromJson(callResponse.body(), JsonObject::class.java)
     }
 
     //controller
@@ -146,7 +157,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     //esto va en NYTimesToArtistResolver
     private fun generateFormattedResponse(api: NYTimesAPI, nameArtist: String?): String {
-        val response = nyResolver.generateResponse(api, nameArtist)
+        val response = generateResponse(api, nameArtist)
         val abstract = getAsJsonObject(response)
         return if (abstract == null)
             NO_RESULTS
@@ -178,7 +189,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     //esto va en NYTimesToArtistResolver
     private fun getURL(artistName: String?): String {
-        val response = nyResolver.generateResponse(nyTimesAPI, artistName)
+        val response = generateResponse(nyTimesAPI, artistName)
         return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
 

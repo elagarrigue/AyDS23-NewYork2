@@ -9,8 +9,6 @@ interface NYTimesToArtistResolver {
     fun getJson(callResponse: Response<String>): JsonObject
     fun getAsJsonObject(response: JsonObject): JsonElement?
     fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String
-    fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject
-    fun getResponse(nyTimesAPI: NYTimesAPI, artistName: String?): Response<String>
 }
 
 internal class JsonToArtistResolver : NYTimesToArtistResolver{
@@ -26,13 +24,4 @@ internal class JsonToArtistResolver : NYTimesToArtistResolver{
     override fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
         return abstract.asString.replace("\\n", "\n")
     }
-
-    override fun generateResponse(nyTimesAPI: NYTimesAPI, artistName: String?): JsonObject {
-        val callResponse = getResponse(nyTimesAPI, artistName)
-        val jObj = getJson(callResponse)
-        return jObj[ayds.newyork.songinfo.moredetails.data.repository.PROP_RESPONSE].asJsonObject
-    }
-
-    override fun getResponse(nyTimesAPI: NYTimesAPI, artistName: String?) =
-        nyTimesAPI.getArtistInfo(artistName).execute()
 }
