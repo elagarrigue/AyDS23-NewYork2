@@ -27,6 +27,7 @@ object MoreDetailsInjector {
     private lateinit var moreDetailsData: MoreDetailsData
     private lateinit var moreDetailsDomain: MoreDetailsDomain
     private lateinit var moreDetailsPresentation: MoreDetailsPresentation
+    public lateinit var artistRepository: ArtistRepository
 
     fun initMoreDetailsData(){
         moreDetailsData = MoreDetailsDataImpl()
@@ -36,7 +37,7 @@ object MoreDetailsInjector {
     fun initMoreDetailsDomain(){
         val artistLocalStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsPresentation as Context, CursorToArtistDataMapperImpl())
         val nyTimesService: NYTimesService = initNYTimesService()
-        val artistRepository: ArtistRepository = ArtistRepositoryImpl(artistLocalStorage, nyTimesService)
+        artistRepository = ArtistRepositoryImpl(artistLocalStorage, nyTimesService)
         moreDetailsDomain = MoreDetailsDomainImpl(artistRepository)
     }
 
