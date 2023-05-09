@@ -49,6 +49,7 @@ class MoreDetailsViewImpl() : MoreDetailsView, AppCompatActivity() {
         obtainArtistName()
         initViewInfo()
         setViewInPresentation()
+        initMoreDetailsDomain()
         initPresenter()
         moreDetailsPresenter.obtainArtistRepository()
         moreDetailsPresenter.setArtistName(intent.getStringExtra(artistName))
@@ -57,6 +58,10 @@ class MoreDetailsViewImpl() : MoreDetailsView, AppCompatActivity() {
 
     private fun obtainArtistName() {
         artistName = intent.getStringExtra(ARTIST_NAME)!!
+    }
+
+    private fun initMoreDetailsDomain(){
+        moreDetailsPresentation.initMoreDetailsDomain()
     }
 
     private fun setViewInPresentation(){

@@ -25,7 +25,7 @@ private const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
 object MoreDetailsInjector {
 
     private lateinit var moreDetailsData: MoreDetailsData
-    private lateinit var moreDetailsDomain: MoreDetailsDomain
+    lateinit var moreDetailsDomain: MoreDetailsDomain
     private lateinit var moreDetailsPresentation: MoreDetailsPresentation
     public lateinit var artistRepository: ArtistRepository
 
@@ -34,12 +34,15 @@ object MoreDetailsInjector {
         moreDetailsData.setMoreDetailsDomain(moreDetailsDomain)
     }
 
+    fun setPresentation(moreDetailsPresentation: MoreDetailsPresentation){
+        this.moreDetailsPresentation = moreDetailsPresentation
+    }
+
     fun initMoreDetailsDomain(){
         val artistLocalStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsPresentation as Context, CursorToArtistDataMapperImpl())
         val nyTimesService: NYTimesService = initNYTimesService()
         artistRepository = ArtistRepositoryImpl(artistLocalStorage, nyTimesService)
         moreDetailsDomain = MoreDetailsDomainImpl(artistRepository)
-        moreDetailsPresentation.initMoreDetailsDomain(moreDetailsDomain)
     }
 
     private fun initNYTimesService(): NYTimesService {
@@ -52,8 +55,4 @@ object MoreDetailsInjector {
         return NYTimesServiceImpl(nyTimesAPI, nyTimesToArtistResolver)
     }
 
-    fun initMoreDetailsPresentation(){
-        moreDetailsPresentation = MoreDetailsPresentationImpl()
-        moreDetailsPresentation.initMoreDetailsDomain(moreDetailsDomain)
-    }
 }
