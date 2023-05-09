@@ -39,6 +39,7 @@ object MoreDetailsInjector {
         val nyTimesService: NYTimesService = initNYTimesService()
         artistRepository = ArtistRepositoryImpl(artistLocalStorage, nyTimesService)
         moreDetailsDomain = MoreDetailsDomainImpl(artistRepository)
+        moreDetailsPresentation.initMoreDetailsDomain(moreDetailsDomain)
     }
 
     private fun initNYTimesService(): NYTimesService {
@@ -53,7 +54,6 @@ object MoreDetailsInjector {
 
     fun initMoreDetailsPresentation(){
         moreDetailsPresentation = MoreDetailsPresentationImpl()
-        moreDetailsPresentation.setMoreDetailsInjector(this)
-        moreDetailsPresentation.setMoreDetailsDomain(moreDetailsDomain)
+        moreDetailsPresentation.initMoreDetailsDomain(moreDetailsDomain)
     }
 }

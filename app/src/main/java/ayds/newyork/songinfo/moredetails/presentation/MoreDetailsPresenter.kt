@@ -17,13 +17,14 @@ interface MoreDetailsPresenter {
     fun setArtistName(artistName: String?)
 }
 
-internal class MoreDetailsPresenterImpl(private val moreDetailsView: MoreDetailsView) : MoreDetailsPresenter {
-    private lateinit var view : MoreDetailsView
+internal class MoreDetailsPresenterImpl(private val moreDetailsView: MoreDetailsView, private val moreDetailsPresentation: MoreDetailsPresentation) : MoreDetailsPresenter {
+
     private lateinit var repository: ArtistRepository
     private var artistName: String? = null
 
+
     override fun obtainArtistRepository() {
-        repository = MoreDetailsInjector.artistRepository
+        repository = moreDetailsPresentation.obtainArtistRepository()
     }
 
     override fun loadArtistInfo() {
@@ -32,7 +33,7 @@ internal class MoreDetailsPresenterImpl(private val moreDetailsView: MoreDetails
             if(artistName != null)
                 artistData = repository.getArtistData(artistName!!)
             if(artistData != null)
-                view.setView(artistData)
+                moreDetailsView.setView(artistData)
         }.start()
     }
 

@@ -12,7 +12,7 @@ import ayds.newyork.songinfo.R
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import com.squareup.picasso.Picasso
 import java.util.*
-
+const val ARTIST_NAME = "artistName"
 private const val IN_LOCAL_REPOSITORY = "[*]"
 private const val IMAGE_URL =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
@@ -37,18 +37,35 @@ interface MoreDetailsView {
     fun textToHTML(text: String?, term: String?): String
 }
 
-abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) : MoreDetailsView, AppCompatActivity() {
-    private var presenter = moreDetailsPresenter
+class MoreDetailsViewImpl() : MoreDetailsView, AppCompatActivity() {
+    private lateinit var moreDetailsPresenter: MoreDetailsPresenter
+    private var moreDetailsPresentation = MoreDetailsPresentationImpl()
     private lateinit var textInfoWindow: TextView
     private lateinit var artistName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
+        obtainArtistName()
         initViewInfo()
-        presenter.obtainArtistRepository()
-        presenter.setArtistName(intent.getStringExtra(artistName))
-        presenter.loadArtistInfo()
+        setViewInPresentation()
+        initPresenter()
+        moreDetailsPresenter.obtainArtistRepository()
+        moreDetailsPresenter.setArtistName(intent.getStringExtra(artistName))
+        moreDetailsPresenter.loadArtistInfo()
+    }
+
+    private fun obtainArtistName() {
+        artistName = intent.getStringExtra(ARTIST_NAME)!!
+    }
+
+    private fun setViewInPresentation(){
+        moreDetailsPresentation.initMoreDetailsView(this)
+    }
+
+    private fun initPresenter(){
+        moreDetailsPresentation.initPresenter()
+        moreDetailsPresenter = moreDetailsPresentation.moreDetailsPresenter
     }
 
     override fun initViewInfo() {

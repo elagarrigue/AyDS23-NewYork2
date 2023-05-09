@@ -2,21 +2,33 @@ package ayds.newyork.songinfo.moredetails.presentation
 
 import ayds.newyork.songinfo.moredetails.MoreDetailsInjector
 import ayds.newyork.songinfo.moredetails.domain.MoreDetailsDomain
+import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 
 interface MoreDetailsPresentation{
-    fun setMoreDetailsDomain(moreDetailsDomain: MoreDetailsDomain)
-    fun setMoreDetailsInjector(moreDetailsInjector: MoreDetailsInjector)
+    fun initMoreDetailsDomain(moreDetailsDomain: MoreDetailsDomain)
+    fun initMoreDetailsView(moreDetailsView: MoreDetailsView)
+    fun initPresenter()
+    fun obtainArtistRepository(): ArtistRepository
 }
 
 internal class MoreDetailsPresentationImpl: MoreDetailsPresentation{
-    private lateinit var moreDetailsInjector: MoreDetailsInjector
-    private lateinit var moreDetailsDomain: MoreDetailsDomain
-    override fun setMoreDetailsDomain(moreDetailsDomain: MoreDetailsDomain) {
+    lateinit var moreDetailsDomain: MoreDetailsDomain
+    lateinit var moreDetailsPresenter: MoreDetailsPresenter
+    private lateinit var moreDetailsView: MoreDetailsView
+    private lateinit var repository: ArtistRepository
+    override fun initMoreDetailsDomain(moreDetailsDomain: MoreDetailsDomain) {
+        MoreDetailsInjector.initMoreDetailsDomain()
         this.moreDetailsDomain = moreDetailsDomain
     }
 
-    override fun setMoreDetailsInjector(moreDetailsInjector: MoreDetailsInjector) {
-        this.moreDetailsInjector = moreDetailsInjector
+    override fun initMoreDetailsView(moreDetailsView: MoreDetailsView) {
+        this.moreDetailsView = moreDetailsView
     }
+
+    override fun initPresenter() {
+        moreDetailsPresenter = MoreDetailsPresenterImpl(moreDetailsView, this)
+    }
+
+    override fun obtainArtistRepository() = MoreDetailsInjector.artistRepository
 
 }
