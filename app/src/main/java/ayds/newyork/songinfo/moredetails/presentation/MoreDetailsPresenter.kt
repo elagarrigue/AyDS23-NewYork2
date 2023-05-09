@@ -13,7 +13,6 @@ import java.util.*
 interface MoreDetailsPresenter {
     fun obtainArtistRepository()
     fun loadArtistInfo()
-    fun markArtistAsLocal(artistData: ArtistData)
     fun setArtistName(artistName: String?)
 }
 
@@ -35,11 +34,6 @@ internal class MoreDetailsPresenterImpl(private val moreDetailsView: MoreDetails
             if(artistData != null)
                 moreDetailsView.setView(artistData)
         }.start()
-    }
-
-    override fun markArtistAsLocal(artistData: ArtistData){
-        if(artistData is ArtistData.ArtistWithData)
-            artistData.isInDatabase = true
     }
 
     override fun setArtistName(artistName: String?) {
