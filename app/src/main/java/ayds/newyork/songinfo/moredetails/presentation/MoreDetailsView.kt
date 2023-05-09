@@ -3,124 +3,85 @@ package ayds.newyork.songinfo.moredetails.presentation
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
+import android.text.Html
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.HtmlCompat
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import com.squareup.picasso.Picasso
-import java.util.*
+import ayds.observer.Observer
 const val ARTIST_NAME = "artistName"
-private const val IN_LOCAL_REPOSITORY = "[*]"
-private const val IMAGE_URL =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU"
-private const val OPEN_LABEL_HTML = "<html>"
-private const val OPEN_DIV_WIDTH = "<div width="
-private const val OPEN_FONT_FACE = "<font face="
-private const val CLOSE_LABEL = ">"
-private const val LINE_JUMP_HTML = "<br>"
-private const val OPEN_LABEL_WORD_BLACK = "<b>"
-private const val CLOSE_LABEL_WORD_BLACK = "</b>"
-private const val CLOSE_LABEL_HTML = "</html>"
-private const val CLOSE_LABEL_DIV = "</div>"
-private const val CLOSE_LABEL_FONT = "</font>"
-private const val HTML_DIV_WIDTH = "400"
-private const val HTML_FONT_FACE = "arial"
 
 interface MoreDetailsView {
-    fun initViewInfo()
-    fun setView(artistData: ArtistData)
-    fun setButtonClickListener(urlString: String)
-    fun setImage(infoArtist: String?)
-    fun textToHTML(text: String?, term: String?): String
+
 }
 
-class MoreDetailsViewImpl() : MoreDetailsView, AppCompatActivity() {
-    private lateinit var moreDetailsPresenter: MoreDetailsPresenter
-    private var moreDetailsPresentation = MoreDetailsPresentationImpl()
-    private lateinit var textInfoWindow: TextView
-    private lateinit var artistName: String
+class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDetailsView, AppCompatActivity() {
+
+    private lateinit var artistDescriptionTextView: TextView
+    private lateinit var openUrlButton: Button
+    private lateinit var logoImageView: ImageView
+    private val observer: Observer<MoreDetailsUIState> =
+        Observer { value ->
+            updateUIComponents(value)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initProperties()
+        initObservers()
+        val artistName = obtainArtistName()
+        openArtistInfoWindow(artistName)
+    }
+
+    private fun initProperties() {
         setContentView(R.layout.activity_other_info)
-        obtainArtistName()
-        initViewInfo()
-        setViewInPresentation()
-        initMoreDetailsDomain()
-        initPresenter()
-        moreDetailsPresenter.obtainArtistRepository()
-        moreDetailsPresenter.setArtistName(intent.getStringExtra(artistName))
-        moreDetailsPresenter.loadArtistInfo()
+        artistDescriptionTextView = findViewById(R.id.textInfo)
+        logoImageView = findViewById(R.id.imageView)
+        openUrlButton = findViewById(R.id.openUrlButton)
     }
 
-    private fun obtainArtistName() {
-        artistName = intent.getStringExtra(ARTIST_NAME)!!
+
+    private fun initObservers() {
+        presenter.uiStateObservable.subscribe(observer)
     }
 
-    private fun initMoreDetailsDomain(){
-        moreDetailsPresentation.initMoreDetailsDomain()
-    }
+    private fun obtainArtistName() = intent.getStringExtra(ARTIST_NAME)!!.toString()
 
-    private fun setViewInPresentation(){
-        moreDetailsPresentation.initMoreDetailsView(this)
+    private fun updateUIComponents(uiState: MoreDetailsUIState) {
+        setImage(uiState.urlImagen)
+        updateArtistDescription(uiState.info)
+        setButtonUrl(uiState.url)
     }
-
-    private fun initPresenter(){
-        moreDetailsPresentation.initPresenter()
-        moreDetailsPresenter = moreDetailsPresentation.moreDetailsPresenter
-    }
-
-    override fun initViewInfo() {
-        textInfoWindow = findViewById(R.id.textInfo)
-    }
-
-    override fun setView(artistData: ArtistData) {
-        if(artistData is ArtistData.ArtistWithData) {
-            setButtonClickListener(artistData.url)
-            updateInfoArtist(artistName, artistData.info)
-            setImage(artistData.info)
-        }
-    }
-
-    override fun setButtonClickListener(urlString: String) {
-        findViewById<View>(R.id.openUrlButton).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(urlString)
-            startActivity(intent)
-        }
-    }
-
-    override fun setImage(infoArtist: String?) {
+    private fun setImage(imageUrl: String?) {
         runOnUiThread {
-            val imageView = findViewById<ImageView>(R.id.imageView)
-            Picasso.get().load(IMAGE_URL).into(imageView)
-            if (infoArtist != null)
-                textInfoWindow.text =
-                    HtmlCompat.fromHtml(infoArtist, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            Picasso.get().load(imageUrl).into(logoImageView)
         }
     }
-    override fun textToHTML(text: String?, term: String?): String {
-        return with(StringBuilder()) {
-            append(OPEN_LABEL_HTML)
-            append(OPEN_DIV_WIDTH).append(HTML_DIV_WIDTH).append(CLOSE_LABEL)
-            append(OPEN_FONT_FACE).append(HTML_FONT_FACE).append(CLOSE_LABEL)
-            val textWithBold = text!!
-                .replace("'", " ")
-                .replace("\n", LINE_JUMP_HTML)
-                .replace(
-                    "(?i)$term".toRegex(),
-                    OPEN_LABEL_WORD_BLACK + term!!.uppercase(Locale.getDefault()) + CLOSE_LABEL_WORD_BLACK
-                )
-            append(textWithBold)
-            append("$CLOSE_LABEL_FONT$CLOSE_LABEL_DIV$CLOSE_LABEL_HTML")
-            toString()
+
+    private fun updateArtistDescription(finalText: String?) {
+        runOnUiThread {
+            artistDescriptionTextView.text = Html.fromHtml(finalText)
         }
     }
-    private fun updateInfoArtist(nameArtist: String?, infoArtist: String?): String {
-        val artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
-        return textToHTML(infoArtist, artistName)
+
+    private fun setButtonUrl(url:String?) {
+        openUrlButton.setOnClickListener {
+            openExternalUrl(url)
+        }
     }
+
+    private fun openExternalUrl(url: String?) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+    }
+
+    private fun openArtistInfoWindow(artistName:String) {
+        Thread {
+            presenter.loadArtistInfo(artistName)
+        }.start()
+    }
+
 }
