@@ -11,7 +11,7 @@ import java.util.*
 
 
 interface MoreDetailsPresenter {
-    fun initDataBase()
+    fun obtainArtistRepository()
     fun loadArtistInfo()
     fun markArtistAsLocal(artistData: ArtistData)
     fun setArtistName(artistName: String?)
@@ -22,7 +22,7 @@ internal class MoreDetailsPresenterImpl(private val moreDetailsView: MoreDetails
     private lateinit var repository: ArtistRepository
     private var artistName: String? = null
 
-    override fun initDataBase() {
+    override fun obtainArtistRepository() {
         repository = MoreDetailsInjector.artistRepository
     }
 

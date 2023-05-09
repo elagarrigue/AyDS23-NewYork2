@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import ayds.newyork.songinfo.R
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import com.google.gson.JsonElement
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -35,7 +34,7 @@ interface MoreDetailsView {
     fun setView(artistData: ArtistData)
     fun setButtonClickListener(urlString: String)
     fun setImage(infoArtist: String?)
-    fun textToHTML(text: String, term: String?): String
+    fun textToHTML(text: String?, term: String?): String
 }
 
 abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) : MoreDetailsView, AppCompatActivity() {
@@ -47,15 +46,10 @@ abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
         initViewInfo()
-        presenter.initDataBase()
+        presenter.obtainArtistRepository()
         presenter.setArtistName(intent.getStringExtra(artistName))
         presenter.loadArtistInfo()
     }
-
-    //Esto no se si va aca, lo puede pasar como setArtistName
-//    override fun obtainArtistName() {
-//        artistName = intent.getStringExtra(ARTIST_NAME)!!
-//    }
 
     override fun initViewInfo() {
         textInfoWindow = findViewById(R.id.textInfo)
@@ -64,6 +58,7 @@ abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) :
     override fun setView(artistData: ArtistData) {
         if(artistData is ArtistData.ArtistWithData) {
             setButtonClickListener(artistData.url)
+            updateInfoArtist(artistName, artistData.info)
             setImage(artistData.info)
         }
     }
@@ -85,12 +80,12 @@ abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) :
                     HtmlCompat.fromHtml(infoArtist, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
-    override fun textToHTML(text: String, term: String?): String {
+    override fun textToHTML(text: String?, term: String?): String {
         return with(StringBuilder()) {
             append(OPEN_LABEL_HTML)
             append(OPEN_DIV_WIDTH).append(HTML_DIV_WIDTH).append(CLOSE_LABEL)
             append(OPEN_FONT_FACE).append(HTML_FONT_FACE).append(CLOSE_LABEL)
-            val textWithBold = text
+            val textWithBold = text!!
                 .replace("'", " ")
                 .replace("\n", LINE_JUMP_HTML)
                 .replace(
@@ -102,9 +97,8 @@ abstract class MoreDetailsViewImpl(moreDetailsPresenter: MoreDetailsPresenter) :
             toString()
         }
     }
-    private fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
+    private fun updateInfoArtist(nameArtist: String?, infoArtist: String?): String {
         val artistName = "$IN_LOCAL_REPOSITORY$nameArtist"
-        val infoArtist = abstract.asString.replace("\\n", "\n")
         return textToHTML(infoArtist, artistName)
     }
 }

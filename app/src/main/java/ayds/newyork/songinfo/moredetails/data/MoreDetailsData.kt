@@ -1,7 +1,5 @@
 package ayds.newyork.songinfo.moredetails.data
 
-import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesToArtistResolver
 import ayds.newyork.songinfo.moredetails.domain.MoreDetailsDomain
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 
