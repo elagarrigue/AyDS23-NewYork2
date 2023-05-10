@@ -27,6 +27,7 @@ object MoreDetailsInjector {
     fun init(moreDetailsView: MoreDetailsView){
         initRepository(moreDetailsView)
         initPresenter()
+        moreDetailsView.setPresenter(presenter)
     }
 
     private fun initRepository(moreDetailsView: MoreDetailsView){

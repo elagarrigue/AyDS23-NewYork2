@@ -19,7 +19,7 @@ import ayds.observer.Observer
 const val ARTIST_NAME = "artistName"
 
 interface MoreDetailsView {
-
+    fun setPresenter(presenter: MoreDetailsPresenter)
 }
 
 class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
@@ -36,11 +36,14 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        presenter = MoreDetailsInjector.presenter
         initProperties()
         initObservers()
         val artistName = obtainArtistName()
         openArtistInfoWindow(artistName)
+    }
+
+    override fun setPresenter(presenter: MoreDetailsPresenter){
+        this.presenter = presenter
     }
 
     private fun initInjector(){
