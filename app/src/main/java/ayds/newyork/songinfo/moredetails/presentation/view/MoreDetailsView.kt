@@ -9,13 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.home.model.HomeModelInjector
-import ayds.newyork.songinfo.home.view.HomeViewInjector
 import ayds.newyork.songinfo.moredetails.MoreDetailsInjector
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenter
 import com.squareup.picasso.Picasso
 import ayds.observer.Observer
+
 const val ARTIST_NAME = "artistName"
 
 interface MoreDetailsView {

@@ -1,6 +1,5 @@
 package ayds.newyork.songinfo.moredetails.domain.entities
 
-
 sealed class ArtistData {
 
     data class ArtistWithData(
@@ -9,7 +8,4 @@ sealed class ArtistData {
         val url: String,
         var isInDatabase: Boolean,
     ): ArtistData()
-
-
-    object EmptyArtistData : ArtistData()
 }

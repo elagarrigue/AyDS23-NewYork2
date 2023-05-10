@@ -15,6 +15,7 @@ internal class NYTimesServiceImpl(
     private val nyTimesAPI: NYTimesAPI,
     private val nyTimesToArtistResolver: NYTimesToArtistResolver,
 ) : NYTimesService {
+
     override fun getArtistInfo(artistName: String?): ArtistData {
         var infoArtist: String? = null
         try {
@@ -36,6 +37,7 @@ internal class NYTimesServiceImpl(
         val jObj = nyTimesToArtistResolver.getJson(callResponse)
         return jObj[PROP_RESPONSE].asJsonObject
     }
+
     private fun generateFormattedResponse(nameArtist: String?): String {
         val response = generateResponse(nameArtist)
         val abstract = nyTimesToArtistResolver.getAsJsonObject(response)
@@ -44,5 +46,6 @@ internal class NYTimesServiceImpl(
         else
             nyTimesToArtistResolver.updateInfoArtist(abstract, nameArtist)
     }
+
     private fun getResponse(artistName: String?) = nyTimesAPI.getArtistInfo(artistName).execute()
 }

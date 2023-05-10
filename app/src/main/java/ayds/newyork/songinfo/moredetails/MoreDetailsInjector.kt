@@ -49,15 +49,4 @@ object MoreDetailsInjector {
         val format : RepositoryToViewFormatter = RepositoryToViewFormatterImpl()
         this.presenter = MoreDetailsPresenterImpl(artistRepository, format)
     }
-
-    /*fun setPresentation(moreDetailsPresentation: MoreDetailsPresentation){
-        this.moreDetailsPresentation = moreDetailsPresentation
-    }
-
-    fun initMoreDetailsDomain(){
-        val artistLocalStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsPresentation as Context, CursorToArtistDataMapperImpl())
-        val nyTimesService: NYTimesService = initNYTimesService()
-        artistRepository = ArtistRepositoryImpl(artistLocalStorage, nyTimesService)
-        moreDetailsDomain = MoreDetailsDomainImpl(artistRepository)
-    }*/
 }
