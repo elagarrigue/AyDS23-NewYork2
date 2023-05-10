@@ -1,13 +1,13 @@
 package ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service
 
-
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
 import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.NYTimesService
 import com.google.gson.JsonObject
 import java.io.IOException
 
 private const val PROP_RESPONSE = "response"
-private const val NO_RESULTS = "No Results"
 private const val WEB_URL = "web_url"
 private const val DOCS = "docs"
 
@@ -23,8 +23,13 @@ internal class NYTimesServiceImpl(
         } catch (e1: IOException) {
             e1.printStackTrace()
         }
-        val url = if (infoArtist == null) "" else getURL(artistName)
-        return ArtistData.ArtistWithData(artistName, infoArtist, url, false)
+
+        return if(infoArtist == null){
+            EmptyArtistData
+        }
+        else{
+            ArtistWithData(artistName, infoArtist, getURL(artistName), false)
+        }
     }
 
     override fun getURL(artistName: String?): String {
@@ -38,13 +43,13 @@ internal class NYTimesServiceImpl(
         return jObj[PROP_RESPONSE].asJsonObject
     }
 
-    private fun generateFormattedResponse(nameArtist: String?): String {
+    private fun generateFormattedResponse(nameArtist: String?): String? {
         val response = generateResponse(nameArtist)
         val abstract = nyTimesToArtistResolver.getAsJsonObject(response)
         return if (abstract == null)
-            NO_RESULTS
+            null
         else
-            nyTimesToArtistResolver.updateInfoArtist(abstract, nameArtist)
+            nyTimesToArtistResolver.artistInfoAbstractToString(abstract, nameArtist)
     }
 
     private fun getResponse(artistName: String?) = nyTimesAPI.getArtistInfo(artistName).execute()

@@ -8,4 +8,6 @@ sealed class ArtistData {
         val url: String,
         var isInDatabase: Boolean,
     ): ArtistData()
+
+    object EmptyArtistData : ArtistData()
 }

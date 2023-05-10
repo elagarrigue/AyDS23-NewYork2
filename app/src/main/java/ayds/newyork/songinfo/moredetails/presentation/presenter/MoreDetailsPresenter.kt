@@ -1,6 +1,6 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
@@ -17,15 +17,8 @@ internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository
 
     override fun loadArtistInfo(artistName:String) {
         val artistData = repository.getArtistData(artistName!!)
-        val uiState = createUIState(artistData)
+        val url = if (artistData is ArtistWithData) artistData.url else ""
+        val uiState = MoreDetailsUIState(formatter.format(artistData), url)
         onUIStateSubject.notify(uiState!!)
-    }
-
-    private fun createUIState(artist: ArtistData?): MoreDetailsUIState? {
-        return if(artist is ArtistData.ArtistWithData){
-            MoreDetailsUIState(formatter.format(artist), artist.url)
-        }
-        else
-            null
     }
 }

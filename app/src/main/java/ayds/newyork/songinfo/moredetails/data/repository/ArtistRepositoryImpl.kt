@@ -1,6 +1,7 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.NYTimesService
 import ayds.newyork.songinfo.moredetails.data.repository.local.ArtistLocalStorage
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
@@ -19,7 +20,7 @@ internal class ArtistRepositoryImpl(
                 try {
                     artistData = nyTimesService.getArtistInfo(artistName)
                     artistData.let {
-                        if(artistData is ArtistData.ArtistWithData)
+                        if(artistData is ArtistWithData)
                             artistLocalStorage.saveArtist(artistName, artistData.info!!)
                     }
                 } catch (e: Exception) {
@@ -36,12 +37,12 @@ internal class ArtistRepositoryImpl(
             null
         else {
             val url = nyTimesService.getURL(artistName)
-            ArtistData.ArtistWithData(artistName, infoArtist, url, true)
+            ArtistWithData(artistName, infoArtist, url, true)
         }
     }
 
     private fun markArtistAsLocal(artistData: ArtistData){
-        if(artistData is ArtistData.ArtistWithData)
+        if(artistData is ArtistWithData)
             artistData.isInDatabase = true
     }
 }

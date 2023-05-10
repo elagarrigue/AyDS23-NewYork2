@@ -8,7 +8,7 @@ import retrofit2.Response
 interface NYTimesToArtistResolver {
     fun getJson(callResponse: Response<String>): JsonObject
     fun getAsJsonObject(response: JsonObject): JsonElement?
-    fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String
+    fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String
 }
 
 internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver{
@@ -21,7 +21,7 @@ internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver{
         return response["docs"].asJsonArray[0].asJsonObject["abstract"]
     }
 
-    override fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String {
+    override fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String {
         return abstract.asString.replace("\\n", "\n")
     }
 }
