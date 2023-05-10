@@ -6,5 +6,4 @@ interface NYTimesService {
 
     fun getArtistInfo(artistName: String?): ArtistData
     fun getURL(artistName: String?): String
-    fun generateFormattedResponse(nameArtist: String?): String
 }

@@ -36,7 +36,7 @@ internal class ArtistRepositoryImpl(
             null
         else {
             val url = nyTimesService.getURL(artistName)
-            ArtistData.ArtistWithData(infoArtist, url, true)
+            ArtistData.ArtistWithData(artistName, infoArtist, url, true)
         }
     }
 

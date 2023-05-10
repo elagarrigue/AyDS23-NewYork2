@@ -1,10 +1,10 @@
-package ayds.newyork.songinfo.moredetails.presentation
+package ayds.newyork.songinfo.moredetails.presentation.presenter
 
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import java.util.*
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
-
+private const val NOT_IN_LOCAL_REPOSITORY = ""
 private const val OPEN_LABEL_HTML = "<html>"
 private const val OPEN_DIV_WIDTH = "<div width="
 private const val OPEN_FONT_FACE = "<font face="
@@ -18,14 +18,26 @@ private const val CLOSE_LABEL_FONT = "</font>"
 private const val HTML_DIV_WIDTH = "400"
 private const val HTML_FONT_FACE = "arial"
 
-
 interface RepositoryToViewFormatter {
-    //fun textToHTML(text: String?, term: String?): String
-    fun format(artist: ArtistData?):String
+    fun format(artist: ArtistData?):String?
 }
 
 class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
-     private fun textToHTML(text: String?, term: String?): String {
+
+    override fun format(artist: ArtistData?): String? {
+        var artistName: String? = null
+
+        if (artist is ArtistData.ArtistWithData) {
+            artistName = if (artist.isInDatabase)
+                textToHTML("$IN_LOCAL_REPOSITORY${artist.info}", artist.info)
+            else
+                textToHTML("$NOT_IN_LOCAL_REPOSITORY${artist.info}", artist.info)
+        }
+
+        return artistName
+    }
+
+    private fun textToHTML(text: String?, term: String?): String {
         return with(StringBuilder()) {
             append(OPEN_LABEL_HTML)
             append(OPEN_DIV_WIDTH).append(HTML_DIV_WIDTH).append(CLOSE_LABEL)
@@ -42,16 +54,4 @@ class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
             toString()
         }
     }
-
-
-    override fun format(artist: ArtistData?): String {
-        if(artist is ArtistData.ArtistWithData){
-            val artistName = "$IN_LOCAL_REPOSITORY$artist"
-            return textToHTML(infoArtist, artist.info)
-
-        }
-
-    }
-
-
 }

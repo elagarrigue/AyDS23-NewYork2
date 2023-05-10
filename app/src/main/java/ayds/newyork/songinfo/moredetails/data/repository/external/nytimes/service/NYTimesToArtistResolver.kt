@@ -11,7 +11,7 @@ interface NYTimesToArtistResolver {
     fun updateInfoArtist(abstract: JsonElement, nameArtist: String?): String
 }
 
-internal class JsonToArtistResolver : NYTimesToArtistResolver{
+internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver{
     override fun getJson(callResponse: Response<String>): JsonObject {
         val gson = Gson()
         return gson.fromJson(callResponse.body(), JsonObject::class.java)

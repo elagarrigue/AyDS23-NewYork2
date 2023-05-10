@@ -1,4 +1,4 @@
-package ayds.newyork.songinfo.moredetails.presentation
+package ayds.newyork.songinfo.moredetails.presentation.view
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ayds.newyork.songinfo.R
+import ayds.newyork.songinfo.home.model.HomeModelInjector
+import ayds.newyork.songinfo.home.view.HomeViewInjector
+import ayds.newyork.songinfo.moredetails.MoreDetailsInjector
+import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
+import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenter
 import com.squareup.picasso.Picasso
 import ayds.observer.Observer
 const val ARTIST_NAME = "artistName"
@@ -17,7 +22,7 @@ interface MoreDetailsView {
 
 }
 
-class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDetailsView, AppCompatActivity() {
+class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
 
     private lateinit var artistDescriptionTextView: TextView
     private lateinit var openUrlButton: Button
@@ -26,13 +31,20 @@ class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDeta
         Observer { value ->
             updateUIComponents(value)
         }
+    private lateinit var presenter: MoreDetailsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
+        presenter = MoreDetailsInjector.presenter
         initProperties()
         initObservers()
         val artistName = obtainArtistName()
         openArtistInfoWindow(artistName)
+    }
+
+    private fun initInjector(){
+        MoreDetailsInjector.init(this)
     }
 
     private fun initProperties() {
@@ -41,7 +53,6 @@ class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDeta
         logoImageView = findViewById(R.id.imageView)
         openUrlButton = findViewById(R.id.openUrlButton)
     }
-
 
     private fun initObservers() {
         presenter.uiStateObservable.subscribe(observer)
@@ -54,6 +65,7 @@ class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDeta
         updateArtistDescription(uiState.info)
         setButtonUrl(uiState.url)
     }
+    
     private fun setImage(imageUrl: String?) {
         runOnUiThread {
             Picasso.get().load(imageUrl).into(logoImageView)
@@ -83,5 +95,4 @@ class MoreDetailsViewImpl(private val presenter:MoreDetailsPresenter) : MoreDeta
             presenter.loadArtistInfo(artistName)
         }.start()
     }
-
 }

@@ -23,7 +23,7 @@ internal class NYTimesServiceImpl(
             e1.printStackTrace()
         }
         val url = if (infoArtist == null) "" else getURL(artistName)
-        return ArtistData.ArtistWithData(infoArtist, url, false)
+        return ArtistData.ArtistWithData(artistName, infoArtist, url, false)
     }
 
     override fun getURL(artistName: String?): String {
@@ -36,7 +36,7 @@ internal class NYTimesServiceImpl(
         val jObj = nyTimesToArtistResolver.getJson(callResponse)
         return jObj[PROP_RESPONSE].asJsonObject
     }
-    override fun generateFormattedResponse(nameArtist: String?): String {
+    private fun generateFormattedResponse(nameArtist: String?): String {
         val response = generateResponse(nameArtist)
         val abstract = nyTimesToArtistResolver.getAsJsonObject(response)
         return if (abstract == null)
