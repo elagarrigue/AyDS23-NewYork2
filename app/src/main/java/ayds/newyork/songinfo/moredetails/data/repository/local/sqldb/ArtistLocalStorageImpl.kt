@@ -12,6 +12,7 @@ private const val SELECTION = "$COLUMN_ARTIST  = ?"
 private const val ORDER = "$COLUMN_ARTIST DESC"
 
 interface ArtistLocalStorage {
+
     fun saveArtist(artist: String?, info: String)
 
     fun getInfo(artist: String?): String?

@@ -18,6 +18,7 @@ import ayds.observer.Observer
 const val ARTIST_NAME = "artistName"
 
 interface MoreDetailsView {
+
     fun setPresenter(presenter: MoreDetailsPresenter)
 }
 
@@ -38,7 +39,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         initProperties()
         initObservers()
         val artistName = obtainArtistName()
-        openArtistInfoWindow(artistName)
+        presenter.openArtistInfoWindow(artistName)
     }
 
     override fun setPresenter(presenter: MoreDetailsPresenter){
@@ -90,11 +91,5 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
         startActivity(intent)
-    }
-
-    private fun openArtistInfoWindow(artistName:String) {
-        Thread {
-            presenter.loadArtistInfo(artistName)
-        }.start()
     }
 }

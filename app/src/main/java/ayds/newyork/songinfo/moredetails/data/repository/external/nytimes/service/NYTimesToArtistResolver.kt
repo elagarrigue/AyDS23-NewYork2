@@ -13,13 +13,11 @@ interface NYTimesToArtistResolver {
     fun getJson(callResponse: Response<String>): JsonObject
     fun getAsJsonObject(response: JsonObject): JsonElement?
     fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String
-    fun getURL(artistName: String?): String
-    fun generateFormattedResponse(nameArtist: String?): String?
-    fun setNYTimesService(nyTimesService: NYTimesService)
+    fun getURL(response: Response<String>): String
+    fun generateFormattedResponse(response: Response<String>, nameArtist: String?): String?
 }
 
-internal class NYTimesToArtistResolverImpl: NYTimesToArtistResolver{
-    private lateinit var nyTimesService: NYTimesService
+internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver{
     override fun getJson(callResponse: Response<String>): JsonObject {
         val gson = Gson()
         return gson.fromJson(callResponse.body(), JsonObject::class.java)
@@ -33,27 +31,23 @@ internal class NYTimesToArtistResolverImpl: NYTimesToArtistResolver{
         return abstract.asString.replace("\\n", "\n")
     }
 
-    override fun getURL(artistName: String?): String {
-        val response = generateResponse(artistName)
-        return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
+    override fun getURL(response: Response<String>): String {
+        val jsonResponse = generateResponse(response)
+        return jsonResponse[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
     }
 
-    private fun generateResponse(artistName: String?): JsonObject {
-        val callResponse = nyTimesService.getResponse(artistName)
-        val jObj = getJson(callResponse)
+    private fun generateResponse(response: Response<String>): JsonObject {
+        val jObj = getJson(response)
         return jObj[PROP_RESPONSE].asJsonObject
     }
 
-    override fun generateFormattedResponse(nameArtist: String?): String? {
-        val response = generateResponse(nameArtist)
-        val abstract = getAsJsonObject(response)
+    override fun generateFormattedResponse(response: Response<String>, nameArtist: String?): String? {
+        val jsonResponse = generateResponse(response)
+        val abstract = getAsJsonObject(jsonResponse)
         return if (abstract == null)
             null
         else
             artistInfoAbstractToString(abstract, nameArtist)
     }
 
-    override fun setNYTimesService(nyTimesService: NYTimesService) {
-        this.nyTimesService = nyTimesService
-    }
 }

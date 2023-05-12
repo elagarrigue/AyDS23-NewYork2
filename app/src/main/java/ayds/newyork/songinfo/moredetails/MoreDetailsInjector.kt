@@ -22,8 +22,6 @@ private const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
 object MoreDetailsInjector {
     private lateinit var artistRepository : ArtistRepository
     lateinit var presenter : MoreDetailsPresenter
-    private lateinit var nyTimesToArtistResolver: NYTimesToArtistResolver
-    private lateinit var nyTimesService: NYTimesService
 
     fun init(moreDetailsView: MoreDetailsView){
         initRepository(moreDetailsView)
@@ -33,24 +31,20 @@ object MoreDetailsInjector {
 
     private fun initRepository(moreDetailsView: MoreDetailsView){
         val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
-        val nyTimesService: NYTimesService = initNYTimesService()
-        setNYTimesServiceInResolver()
-        this.artistRepository = ArtistRepositoryImpl(artistStorage, nyTimesService, nyTimesToArtistResolver)
+        val nyTimesService: NYTimesService = initNYTimesService(createRetrofit())
+        this.artistRepository = ArtistRepositoryImpl(artistStorage, nyTimesService)
     }
 
-    private fun initNYTimesService(): NYTimesService {
+    private fun createRetrofit(): NYTimesAPI {
         val nyTimesAPIRetrofit = Retrofit.Builder()
             .baseUrl(LINK_API_NYTIMES)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
-        val nyTimesAPI = nyTimesAPIRetrofit.create(NYTimesAPI::class.java)
-        nyTimesToArtistResolver = NYTimesToArtistResolverImpl()
-        nyTimesService = NYTimesServiceImpl(nyTimesAPI, nyTimesToArtistResolver)
-        return nyTimesService
+        return nyTimesAPIRetrofit.create(NYTimesAPI::class.java)
     }
 
-    private fun setNYTimesServiceInResolver(){
-        nyTimesToArtistResolver.setNYTimesService(nyTimesService)
+    private fun initNYTimesService(nyTimesAPI: NYTimesAPI): NYTimesService {
+        return NYTimesServiceImpl(nyTimesAPI, NYTimesToArtistResolverImpl())
     }
 
     private fun initPresenter(){

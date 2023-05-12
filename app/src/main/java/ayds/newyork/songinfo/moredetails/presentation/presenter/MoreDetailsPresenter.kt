@@ -7,15 +7,23 @@ import ayds.observer.Subject
 import ayds.observer.Observable
 
 interface MoreDetailsPresenter {
+
     val uiStateObservable: Observable<MoreDetailsUIState>
-    fun loadArtistInfo(artistName:String)
+
+    fun openArtistInfoWindow(artistName:String)
 }
 
 internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository, private val formatter: RepositoryToViewFormatter) : MoreDetailsPresenter {
     private val onUIStateSubject = Subject<MoreDetailsUIState>()
     override val uiStateObservable:Observable<MoreDetailsUIState> = onUIStateSubject
 
-    override fun loadArtistInfo(artistName:String) {
+    override fun openArtistInfoWindow(artistName:String) {
+        Thread {
+            loadArtistInfo(artistName)
+        }.start()
+    }
+
+    private fun loadArtistInfo(artistName:String) {
         val artistData = repository.getArtistData(artistName!!)
         val url = if (artistData is ArtistWithData) artistData.url else ""
         val uiState = MoreDetailsUIState(formatter.format(artistData), url)
