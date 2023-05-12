@@ -5,12 +5,17 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import ayds.newyork.songinfo.moredetails.data.repository.local.ArtistLocalStorage
 
 private const val DATABASE_NAME = "dictionary.db"
 private const val DATABASE_VERSION = 1
 private const val SELECTION = "$COLUMN_ARTIST  = ?"
 private const val ORDER = "$COLUMN_ARTIST DESC"
+
+interface ArtistLocalStorage {
+    fun saveArtist(artist: String?, info: String)
+
+    fun getInfo(artist: String?): String?
+}
 
 internal class ArtistLocalStorageImpl(context: Context, private val cursorToArtistDataMapper: CursorToArtistDataMapper) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
     ArtistLocalStorage {

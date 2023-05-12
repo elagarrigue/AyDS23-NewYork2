@@ -3,13 +3,15 @@ package ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.servi
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.NYTimesService
 import com.google.gson.JsonObject
+import retrofit2.Response
 import java.io.IOException
 
-private const val PROP_RESPONSE = "response"
-private const val WEB_URL = "web_url"
-private const val DOCS = "docs"
+interface NYTimesService {
+
+    fun getArtistInfo(artistName: String?): ArtistData
+    fun getResponse(artistName: String?): Response<String>
+}
 
 internal class NYTimesServiceImpl(
     private val nyTimesAPI: NYTimesAPI,
@@ -19,7 +21,7 @@ internal class NYTimesServiceImpl(
     override fun getArtistInfo(artistName: String?): ArtistData {
         var infoArtist: String? = null
         try {
-            infoArtist = generateFormattedResponse(artistName)
+            infoArtist = nyTimesToArtistResolver.generateFormattedResponse(artistName)
         } catch (e1: IOException) {
             e1.printStackTrace()
         }
@@ -28,29 +30,9 @@ internal class NYTimesServiceImpl(
             EmptyArtistData
         }
         else{
-            ArtistWithData(artistName, infoArtist, getURL(artistName), false)
+            ArtistWithData(artistName, infoArtist, nyTimesToArtistResolver.getURL(artistName), false)
         }
     }
 
-    override fun getURL(artistName: String?): String {
-        val response = generateResponse(artistName)
-        return response[DOCS].asJsonArray[0].asJsonObject[WEB_URL].asString
-    }
-
-    private fun generateResponse(artistName: String?): JsonObject {
-        val callResponse = getResponse(artistName)
-        val jObj = nyTimesToArtistResolver.getJson(callResponse)
-        return jObj[PROP_RESPONSE].asJsonObject
-    }
-
-    private fun generateFormattedResponse(nameArtist: String?): String? {
-        val response = generateResponse(nameArtist)
-        val abstract = nyTimesToArtistResolver.getAsJsonObject(response)
-        return if (abstract == null)
-            null
-        else
-            nyTimesToArtistResolver.artistInfoAbstractToString(abstract, nameArtist)
-    }
-
-    private fun getResponse(artistName: String?) = nyTimesAPI.getArtistInfo(artistName).execute()
+    override fun getResponse(artistName: String?): Response<String> = nyTimesAPI.getArtistInfo(artistName).execute()
 }
