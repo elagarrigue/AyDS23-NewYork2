@@ -15,7 +15,7 @@ interface MoreDetailsPresenter {
 
 internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository, private val formatter: RepositoryToViewFormatter) : MoreDetailsPresenter {
     private val onUIStateSubject = Subject<MoreDetailsUIState>()
-    override val uiStateObservable:Observable<MoreDetailsUIState> = onUIStateSubject
+    override val  uiStateObservable = onUIStateSubject
 
     override fun openArtistInfoWindow(artistName:String) {
         Thread {
@@ -28,5 +28,6 @@ internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository
         val url = if (artistData is ArtistWithData) artistData.url else ""
         val uiState = MoreDetailsUIState(formatter.format(artistData), url)
         onUIStateSubject.notify(uiState!!)
+        uiStateObservable.notify(uiState)
     }
 }

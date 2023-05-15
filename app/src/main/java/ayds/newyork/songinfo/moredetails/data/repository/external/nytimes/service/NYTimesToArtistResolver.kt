@@ -10,24 +10,21 @@ private const val WEB_URL = "web_url"
 private const val DOCS = "docs"
 
 interface NYTimesToArtistResolver {
-    fun getJson(callResponse: Response<String>): JsonObject
-    fun getAsJsonObject(response: JsonObject): JsonElement?
-    fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String
     fun getURL(response: Response<String>): String
     fun generateFormattedResponse(response: Response<String>, nameArtist: String?): String?
 }
 
 internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver{
-    override fun getJson(callResponse: Response<String>): JsonObject {
+    private fun getJson(callResponse: Response<String>): JsonObject {
         val gson = Gson()
         return gson.fromJson(callResponse.body(), JsonObject::class.java)
     }
 
-    override fun getAsJsonObject(response: JsonObject): JsonElement? {
+    private fun getAsJsonObject(response: JsonObject): JsonElement? {
         return response["docs"].asJsonArray[0].asJsonObject["abstract"]
     }
 
-    override fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String {
+    private fun artistInfoAbstractToString(abstract: JsonElement, nameArtist: String?): String {
         return abstract.asString.replace("\\n", "\n")
     }
 
