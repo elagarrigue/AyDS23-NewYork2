@@ -1,7 +1,7 @@
 package ayds.newyork.songinfo.home.controller
 
 import ayds.newyork.songinfo.home.model.HomeModel
-import ayds.newyork.songinfo.home.model.entities.Song
+import ayds.newyork.songinfo.home.model.entities.Song.SpotifySong
 import ayds.newyork.songinfo.home.view.HomeUiEvent
 import ayds.newyork.songinfo.home.view.HomeUiState
 import ayds.newyork.songinfo.home.view.HomeView
@@ -11,7 +11,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
-
 
 class HomeControllerTest {
 
@@ -43,7 +42,7 @@ class HomeControllerTest {
     @Test
     fun `on more details event should navigate to more details`() {
         every { homeView.uiState } returns HomeUiState(songId = "id")
-        val song: Song = mockk { every { artistName } returns "artist" }
+        val song: SpotifySong = mockk { every { artistName } returns "artist" }
         every { homeModel.getSongById("id") } returns song
 
         onActionSubject.notify(HomeUiEvent.MoreDetails)
