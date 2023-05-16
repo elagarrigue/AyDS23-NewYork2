@@ -24,10 +24,9 @@ internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository
     }
 
     private fun loadArtistInfo(artistName:String) {
-        val artistData = repository.getArtistData(artistName!!)
+        val artistData = repository.getArtistData(artistName)
         val url = if (artistData is ArtistWithData) artistData.url else ""
         val uiState = MoreDetailsUIState(formatter.format(artistData), url)
-        onUIStateSubject.notify(uiState!!)
         uiStateObservable.notify(uiState)
     }
 }
