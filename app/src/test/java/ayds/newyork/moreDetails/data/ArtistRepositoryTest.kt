@@ -21,6 +21,23 @@ class ArtistRepositoryTest {
     }
 
     @Test
+    fun `given local storaged artistInfo should return ArtistData`() {
+        every { artistLocalStorage.getInfo("artistName") } returns "info"
+        every { nyTimesService.getURLWithArtistName("artistName") } returns "url"
+
+        val artistData = ArtistData.ArtistWithData(
+            "artistName",
+            "info",
+            "url",
+            true
+        )
+
+        var result = artistRepository.getArtistData("artistName")
+
+        Assert.assertEquals(artistData, result)
+    }
+
+    @Test
     fun `given non local storaged artist should search on API`() {
         val artistData: ArtistData.ArtistWithData = mockk()
         every { artistLocalStorage.getInfo("artistName") } returns null
