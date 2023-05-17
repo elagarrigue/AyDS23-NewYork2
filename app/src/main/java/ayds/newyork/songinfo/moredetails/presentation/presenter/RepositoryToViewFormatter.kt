@@ -5,7 +5,6 @@ import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithDa
 import java.util.*
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
-private const val NOT_IN_LOCAL_REPOSITORY = ""
 private const val OPEN_LABEL_HTML = "<html>"
 private const val OPEN_DIV_WIDTH = "<div width="
 private const val OPEN_FONT_FACE = "<font face="
@@ -32,7 +31,7 @@ class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
                 if (artist.isInDatabase)
                     textToHTML("$IN_LOCAL_REPOSITORY${artist.info}", artist.name)
                 else
-                    textToHTML("$NOT_IN_LOCAL_REPOSITORY${artist.info}", artist.name)
+                    textToHTML("${artist.info}", artist.name)
             }
             else ->
                 NO_RESULTS
