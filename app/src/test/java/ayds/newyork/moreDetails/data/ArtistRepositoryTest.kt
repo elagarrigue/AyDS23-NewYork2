@@ -57,5 +57,4 @@ class ArtistRepositoryTest {
 
         Assert.assertEquals(null, result)
     }
-
 }

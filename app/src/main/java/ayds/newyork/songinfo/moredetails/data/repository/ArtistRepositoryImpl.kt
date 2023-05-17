@@ -24,7 +24,7 @@ internal class ArtistRepositoryImpl(
                             artistLocalStorage.saveArtist(artistName, artistData.info!!)
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    null
                 }
             }
         }
