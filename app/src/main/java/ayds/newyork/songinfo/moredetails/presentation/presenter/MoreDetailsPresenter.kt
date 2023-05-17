@@ -9,12 +9,12 @@ import ayds.observer.Observable
 interface MoreDetailsPresenter {
 
     val uiStateObservable: Observable<MoreDetailsUIState>
-
+    val onUIStateSubject: Subject<MoreDetailsUIState>
     fun openArtistInfoWindow(artistName:String)
 }
 
 internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository, private val formatter: RepositoryToViewFormatter) : MoreDetailsPresenter {
-    private val onUIStateSubject = Subject<MoreDetailsUIState>()
+    override val onUIStateSubject = Subject<MoreDetailsUIState>()
     override val  uiStateObservable = onUIStateSubject
 
     override fun openArtistInfoWindow(artistName:String) {

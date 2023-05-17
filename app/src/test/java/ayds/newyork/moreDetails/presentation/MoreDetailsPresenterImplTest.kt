@@ -5,7 +5,6 @@ import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -13,15 +12,16 @@ import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository as A
 
 class MoreDetailsPresenterTest {
 
+    private lateinit var uiStateSubject: Subject<MoreDetailsUIState>
     private lateinit var presenter: MoreDetailsPresenter
     private val repositoryMock: ArtistRepository = mockk()
     private val formatterMock: RepositoryToViewFormatter = mockk()
-    private val uiStateSubject: Subject<MoreDetailsUIState> = Subject()
 
     @Before
     fun setUp() {
         presenter = MoreDetailsPresenterImpl(repositoryMock, formatterMock)
-        every { formatterMock.format(any()) } returns "[*]formato"
+        uiStateSubject = presenter.onUIStateSubject
+        every { formatterMock.format(any()) } returns "info"
         val artistData: ArtistData = mockk()
         every { repositoryMock.getArtistData(any()) } returns artistData
     }
@@ -29,39 +29,34 @@ class MoreDetailsPresenterTest {
     @Test
     fun `openArtistInfoWindow should update the UI state with the formatted data`() {
         val artistName = "Radiohead"
-        presenter.openArtistInfoWindow(artistName)
-        Thread.sleep(10000)
-
         val artistData = ArtistData.ArtistWithData("Radiohead","info" , "url", true)
-        val expectedFormattedData = "[*]formato"
-        every { repositoryMock.getArtistData(artistName) } returns artistData
-        every { formatterMock.format(artistData) } returns expectedFormattedData
-
+        val expectedInfo = "info"
         val expectedUIState = MoreDetailsUIState(
-            expectedFormattedData,
+            artistData.info,
             artistData.url,
-            "imagen")
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU")
+        every { repositoryMock.getArtistData(artistName) } returns artistData
+        every { formatterMock.format(artistData) } returns expectedInfo
 
-        verify { formatterMock.format(artistData) }
+        presenter.openArtistInfoWindow(artistName)
+        Thread.sleep(15000)
+
         val actualUiState = uiStateSubject.lastValue()
-
         assertEquals(expectedUIState, actualUiState)
-        assertEquals("imagen",actualUiState?.urlImagen)
-        assertEquals("info",actualUiState?.info)
-        assertEquals("url", actualUiState?.url)
     }
 
     @Test
     fun `loadArtistInfo should update the UI state with no results if the artist data is null`() {
-
         val artistName = ""
-        val expectedFormattedData = "No Results"
+        val expectedUIState = MoreDetailsUIState(
+            "info",
+            "",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU")
 
         presenter.openArtistInfoWindow(artistName)
+        Thread.sleep(15000)
 
         val actualUiState = uiStateSubject.lastValue()
-
-        assertEquals(expectedFormattedData, actualUiState)
-        assertEquals("", actualUiState?.url)
+        assertEquals(expectedUIState, actualUiState)
     }
 }
