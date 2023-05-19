@@ -7,7 +7,6 @@ import java.io.IOException
 
 interface NYTimesService {
     fun getArtistInfo(artistName: String?): ArtistData
-    fun getURLWithArtistName(artistName: String?):String
 }
 
 internal class NYTimesServiceImpl(
@@ -30,11 +29,6 @@ internal class NYTimesServiceImpl(
             val response = getInfoFromAPI(artistName)
             ArtistWithData(artistName, infoArtist, nyTimesToArtistResolver.getURL(response), false)
         }
-    }
-
-    override fun getURLWithArtistName(artistName: String?): String{
-        val response = getInfoFromAPI(artistName)
-        return nyTimesToArtistResolver.getURL(response)
     }
 
     private fun getInfoFromAPI(artistName: String?) = nyTimesAPI.getArtistInfo(artistName).execute()

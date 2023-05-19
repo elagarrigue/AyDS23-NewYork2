@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 
 private const val DATABASE_NAME = "dictionary.db"
 private const val DATABASE_VERSION = 1
@@ -13,9 +15,9 @@ private const val ORDER = "$COLUMN_ARTIST DESC"
 
 interface ArtistLocalStorage {
 
-    fun saveArtist(artist: String?, info: String)
+    fun saveArtist(artist: ArtistWithData)
 
-    fun getInfo(artist: String?): String?
+    fun getArtist(artist: String?): ArtistData
 }
 
 internal class ArtistLocalStorageImpl(context: Context, private val cursorToArtistDataMapper: CursorToArtistDataMapper) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
@@ -24,7 +26,8 @@ internal class ArtistLocalStorageImpl(context: Context, private val cursorToArti
     private val projection = arrayOf(
         COLUMN_ID,
         COLUMN_ARTIST,
-        COLUMN_ARTIST_INFO
+        COLUMN_ARTIST_INFO,
+        COLUMN_ARTIST_URL
     )
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -33,24 +36,24 @@ internal class ArtistLocalStorageImpl(context: Context, private val cursorToArti
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    override fun saveArtist(artist: String?, info: String) {
-        this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist, info))
+    override fun saveArtist(artist: ArtistWithData) {
+        this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist))
     }
 
-    private fun createArtistWithValues(artist: String?, info: String): ContentValues {
+    private fun createArtistWithValues(artist: ArtistWithData): ContentValues {
         val values = ContentValues()
 
         with(values){
-            put(COLUMN_ARTIST, artist)
-            put(COLUMN_ARTIST_INFO, info)
+            put(COLUMN_ARTIST, artist.name)
+            put(COLUMN_ARTIST_INFO, artist.info)
+            put(COLUMN_ARTIST_URL, artist.url)
             put(COLUMN_SOURCE, SOURCE_VALUE)
         }
         return values
     }
 
-    override fun getInfo(artist: String?): String? {
-        val items = cursorToArtistDataMapper.map(createCursor(this, artist))
-        return if (items.isEmpty()) null else items[0]
+    override fun getArtist(artist: String?): ArtistData {
+        return cursorToArtistDataMapper.map(createCursor(this, artist))
     }
 
     private fun createCursor(dbHelper: ArtistLocalStorageImpl, artist: String?): Cursor {
