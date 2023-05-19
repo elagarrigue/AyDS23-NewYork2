@@ -1,11 +1,12 @@
 package ayds.newyork.moreDetails.presentation
 
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatter
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import io.mockk.mockk
 
 class RepositoryToViewFormatterImplTest {
 
@@ -27,7 +28,7 @@ class RepositoryToViewFormatterImplTest {
 
     @Test
     fun `given artist without data returns no results`() {
-        val artist: ArtistData? = null
+        val artist: EmptyArtistData = mockk()
         assertEquals("No Results", formatter.format(artist))
     }
 }
