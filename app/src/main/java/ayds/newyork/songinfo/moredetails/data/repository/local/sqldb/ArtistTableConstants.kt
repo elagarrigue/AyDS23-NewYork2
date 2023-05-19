@@ -13,5 +13,5 @@ const val ARTIST_TABLE_CREATION_QUERY =
     "create table $ARTISTS_TABLE_NAME " +
             "($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COLUMN_ARTIST string, $COLUMN_ARTIST_INFO string, " +
-            "($COLUMN_ARTIST_URL string, " +
+            "$COLUMN_ARTIST_URL string, " +
             "$COLUMN_SOURCE integer)"
