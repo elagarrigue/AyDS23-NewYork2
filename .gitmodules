@@ -1,0 +1,3 @@
+[submodule "libs/NYTimesExternal"]
+	path = libs/NYTimesExternal
+	url = https://github.com/JCRossi/AyDSNewYork2-NYTimes.git
