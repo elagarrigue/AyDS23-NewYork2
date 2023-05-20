@@ -1,7 +1,7 @@
 package ayds.newyork.moreDetails.data
 
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesService
+import ayds.aknewyork.external.service.NYTimesService
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
@@ -15,7 +15,7 @@ import java.lang.Exception
 class ArtistRepositoryTest {
 
     private val artistLocalStorage: ArtistLocalStorage = mockk(relaxUnitFun = true)
-    private val nyTimesService: NYTimesService = mockk(relaxUnitFun = true)
+    private val nyTimesService: ayds.aknewyork.external.service.NYTimesService = mockk(relaxUnitFun = true)
 
     private val artistRepository: ArtistRepository by lazy {
         ArtistRepositoryImpl(artistLocalStorage, nyTimesService)

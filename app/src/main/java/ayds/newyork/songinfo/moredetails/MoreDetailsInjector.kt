@@ -1,10 +1,10 @@
 package ayds.newyork.songinfo.moredetails
 
 import android.content.Context
+import ayds.aknewyork.external.service.NYTimesService
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.*
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesServiceImpl
-import ayds.newyork.songinfo.moredetails.data.repository.external.nytimes.service.NYTimesToArtistResolverImpl
+import ayds.aknewyork.external.service.NYTimesServiceImpl
+import ayds.aknewyork.external.service.NYTimesToArtistResolverImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorageImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.CursorToArtistDataMapperImpl
@@ -35,15 +35,15 @@ object MoreDetailsInjector {
         this.artistRepository = ArtistRepositoryImpl(artistStorage, nyTimesService)
     }
 
-    private fun createRetrofit(): NYTimesAPI {
+    private fun createRetrofit(): ayds.aknewyork.external.service.NYTimesAPI {
         val nyTimesAPIRetrofit = Retrofit.Builder()
             .baseUrl(LINK_API_NYTIMES)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
-        return nyTimesAPIRetrofit.create(NYTimesAPI::class.java)
+        return nyTimesAPIRetrofit.create(ayds.aknewyork.external.service.NYTimesAPI::class.java)
     }
 
-    private fun initNYTimesService(nyTimesAPI: NYTimesAPI): NYTimesService {
+    private fun initNYTimesService(nyTimesAPI: ayds.aknewyork.external.service.NYTimesAPI): NYTimesService {
         return NYTimesServiceImpl(nyTimesAPI, NYTimesToArtistResolverImpl())
     }
 
