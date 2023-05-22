@@ -8,6 +8,7 @@ import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistD
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 import java.lang.Exception
@@ -32,14 +33,16 @@ class ArtistRepositoryTest {
     }
 
     @Test
-    fun `given non local storaged artist should search on API`() {
-        val artistData: ArtistWithData = mockk()
+    fun `given non local storaged artist should search on API and store it`() {
+        val artistData =ArtistWithData("artistName", "info","url", false)
         every { artistLocalStorage.getArtist("artistName") } returns EmptyArtistData
         every { nyTimesService.getArtistInfo("artistName") } returns artistData
 
         val result = artistRepository.getArtistData("artistName")
 
         Assert.assertEquals(artistData, result)
+        Assert.assertFalse(artistData.isInDatabase)
+        verify { artistLocalStorage.saveArtist(artistData) }
     }
 
     @Test
