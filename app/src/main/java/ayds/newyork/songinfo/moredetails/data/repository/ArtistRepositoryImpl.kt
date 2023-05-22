@@ -1,13 +1,12 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
-import ayds.aknewyork.external.service.ArtistDataExternal
+import ayds.aknewyork.external.service.data.entities.ArtistDataExternal
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
-import ayds.aknewyork.external.service.NYTimesService
-import ayds.aknewyork.external.service.ArtistDataExternal.ArtistWithDataExternal
-import ayds.aknewyork.external.service.ArtistDataExternal.EmptyArtistDataExternal
+import ayds.aknewyork.external.service.data.NYTimesService
+import ayds.aknewyork.external.service.data.entities.ArtistDataExternal.ArtistWithDataExternal
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
 
 internal class ArtistRepositoryImpl(

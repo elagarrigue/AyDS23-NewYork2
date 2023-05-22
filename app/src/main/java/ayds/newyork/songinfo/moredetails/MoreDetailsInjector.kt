@@ -1,10 +1,7 @@
 package ayds.newyork.songinfo.moredetails
 
 import android.content.Context
-import ayds.aknewyork.external.service.NYTimesService
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
-import ayds.aknewyork.external.service.NYTimesServiceImpl
-import ayds.aknewyork.external.service.NYTimesToArtistResolverImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorageImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.CursorToArtistDataMapperImpl
@@ -14,10 +11,7 @@ import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPrese
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatter
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
 import ayds.newyork.songinfo.moredetails.presentation.view.MoreDetailsView
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
-
-private const val LINK_API_NYTIMES = "https://api.nytimes.com/svc/search/v2/"
+import ayds.aknewyork.external.service.injector.NYTimesInjector
 
 object MoreDetailsInjector {
     private lateinit var artistRepository : ArtistRepository
@@ -31,20 +25,7 @@ object MoreDetailsInjector {
 
     private fun initRepository(moreDetailsView: MoreDetailsView){
         val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
-        val nyTimesService: NYTimesService = initNYTimesService(createRetrofit())
-        this.artistRepository = ArtistRepositoryImpl(artistStorage, nyTimesService)
-    }
-
-    private fun createRetrofit(): ayds.aknewyork.external.service.NYTimesAPI {
-        val nyTimesAPIRetrofit = Retrofit.Builder()
-            .baseUrl(LINK_API_NYTIMES)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-        return nyTimesAPIRetrofit.create(ayds.aknewyork.external.service.NYTimesAPI::class.java)
-    }
-
-    private fun initNYTimesService(nyTimesAPI: ayds.aknewyork.external.service.NYTimesAPI): NYTimesService {
-        return NYTimesServiceImpl(nyTimesAPI, NYTimesToArtistResolverImpl())
+        this.artistRepository = ArtistRepositoryImpl(artistStorage, NYTimesInjector.nyTimesService)
     }
 
     private fun initPresenter(){
