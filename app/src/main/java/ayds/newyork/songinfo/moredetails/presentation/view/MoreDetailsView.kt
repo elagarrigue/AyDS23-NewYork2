@@ -25,6 +25,7 @@ interface MoreDetailsView {
 class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
 
     private lateinit var artistDescriptionTextView: TextView
+    private lateinit var sourceLabel: TextView
     private lateinit var openUrlButton: Button
     private lateinit var logoImageView: ImageView
     private val observer: Observer<MoreDetailsUIState> =
@@ -55,6 +56,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         artistDescriptionTextView = findViewById(R.id.textInfo)
         logoImageView = findViewById(R.id.imageView)
         openUrlButton = findViewById(R.id.openUrlButton)
+        sourceLabel = findViewById(R.id.sourceTextView)
     }
 
     private fun initObservers() {
@@ -67,8 +69,9 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         setImage(uiState.urlImagen)
         updateArtistDescription(uiState.info)
         setButtonUrl(uiState.url)
+        setSourceLabel(uiState.sourceName)
     }
-    
+
     private fun setImage(imageUrl: String?) {
         runOnUiThread {
             Picasso.get().load(imageUrl).into(logoImageView)
@@ -91,5 +94,11 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
         startActivity(intent)
+    }
+
+    private fun setSourceLabel(sourceName: String){
+        runOnUiThread {
+            sourceLabel.text = sourceName
+        }
     }
 }

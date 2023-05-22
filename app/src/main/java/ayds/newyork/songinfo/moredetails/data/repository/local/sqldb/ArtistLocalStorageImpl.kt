@@ -5,8 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 
 private const val DATABASE_NAME = "dictionary.db"
 private const val DATABASE_VERSION = 1
@@ -15,9 +15,9 @@ private const val ORDER = "$COLUMN_ARTIST DESC"
 
 interface ArtistLocalStorage {
 
-    fun saveArtist(artist: ArtistWithData)
+    fun saveArtist(artist: ArtistCard)
 
-    fun getArtist(artist: String?): ArtistData
+    fun getArtist(artist: String?): Card
 }
 
 internal class ArtistLocalStorageImpl(context: Context, private val cursorToArtistDataMapper: CursorToArtistDataMapper) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
@@ -36,23 +36,23 @@ internal class ArtistLocalStorageImpl(context: Context, private val cursorToArti
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    override fun saveArtist(artist: ArtistWithData) {
+    override fun saveArtist(artist: ArtistCard) {
         this.writableDatabase.insert(ARTISTS_TABLE_NAME, null, createArtistWithValues(artist))
     }
 
-    private fun createArtistWithValues(artist: ArtistWithData): ContentValues {
+    private fun createArtistWithValues(artist: ArtistCard): ContentValues {
         val values = ContentValues()
 
         with(values){
             put(COLUMN_ARTIST, artist.name)
-            put(COLUMN_ARTIST_INFO, artist.info)
-            put(COLUMN_ARTIST_URL, artist.url)
+            put(COLUMN_ARTIST_INFO, artist.description)
+            put(COLUMN_ARTIST_URL, artist.infoUrl)
             put(COLUMN_SOURCE, SOURCE_VALUE)
         }
         return values
     }
 
-    override fun getArtist(artist: String?): ArtistData {
+    override fun getArtist(artist: String?): Card {
         return cursorToArtistDataMapper.map(createCursor(this, artist))
     }
 

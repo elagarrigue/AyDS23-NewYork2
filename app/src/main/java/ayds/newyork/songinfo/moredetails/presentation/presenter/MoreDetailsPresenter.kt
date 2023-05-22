@@ -1,7 +1,7 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
@@ -32,10 +32,12 @@ internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository
         uiStateObservable.notify(uiState)
     }
 
-    private fun updateUIState(artist: ArtistData){
+    private fun updateUIState(artist: Card){
+        uiState = uiState.copy(info = formatter.format(artist))
+
         when(artist){
-            is ArtistWithData -> {
-                uiState = uiState.copy(formatter.format(artist), artist.url)
+            is ArtistCard -> {
+                uiState = uiState.copy(url = artist.infoUrl, sourceName = artist.source.toString())
             }
         }
     }

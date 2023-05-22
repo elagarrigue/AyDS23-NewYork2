@@ -1,7 +1,7 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import java.util.*
 
 private const val IN_LOCAL_REPOSITORY = "[*]"
@@ -20,18 +20,18 @@ private const val HTML_FONT_FACE = "arial"
 private const val NO_RESULTS = "No Results"
 
 interface RepositoryToViewFormatter {
-    fun format(artist: ArtistData):String
+    fun format(artist: Card):String
 }
 
 class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
 
-    override fun format(artist: ArtistData): String {
+    override fun format(artist: Card): String {
         return when(artist){
-            is ArtistWithData -> {
+            is ArtistCard -> {
                 if (artist.isInDatabase)
-                    textToHTML("$IN_LOCAL_REPOSITORY${artist.info}", artist.name)
+                    textToHTML("$IN_LOCAL_REPOSITORY${artist.description}", artist.name)
                 else
-                    textToHTML("${artist.info}", artist.name)
+                    textToHTML("${artist.description}", artist.name)
             }
             else ->
                 NO_RESULTS

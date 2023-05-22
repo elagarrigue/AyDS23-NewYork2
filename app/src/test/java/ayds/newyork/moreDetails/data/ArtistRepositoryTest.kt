@@ -3,8 +3,8 @@ package ayds.newyork.moreDetails.data
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
 import ayds.aknewyork.external.service.NYTimesService
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.EmptyCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -23,7 +23,7 @@ class ArtistRepositoryTest {
 
     @Test
     fun `given local storaged artistInfo should return ArtistData`() {
-        val artistData = ArtistWithData("name", "info", "url", true)
+        val artistData = ArtistCard("name", "info", "url", true)
         every { artistLocalStorage.getArtist("artistName") } returns artistData
 
         val result = artistRepository.getArtistData("artistName")
@@ -33,8 +33,8 @@ class ArtistRepositoryTest {
 
     @Test
     fun `given non local storaged artist should search on API`() {
-        val artistData: ArtistWithData = mockk()
-        every { artistLocalStorage.getArtist("artistName") } returns EmptyArtistData
+        val artistData: ArtistCard = mockk()
+        every { artistLocalStorage.getArtist("artistName") } returns EmptyCard
         every { nyTimesService.getArtistInfo("artistName") } returns artistData
 
         val result = artistRepository.getArtistData("artistName")
@@ -44,11 +44,11 @@ class ArtistRepositoryTest {
 
     @Test
     fun `given service exception should return empty artist`() {
-        every { artistLocalStorage.getArtist("artistName") } returns EmptyArtistData
+        every { artistLocalStorage.getArtist("artistName") } returns EmptyCard
         every { nyTimesService.getArtistInfo("artistName") } throws mockk<Exception>()
 
         val result = artistRepository.getArtistData("artistName")
 
-        Assert.assertEquals(EmptyArtistData, result)
+        Assert.assertEquals(EmptyCard, result)
     }
 }

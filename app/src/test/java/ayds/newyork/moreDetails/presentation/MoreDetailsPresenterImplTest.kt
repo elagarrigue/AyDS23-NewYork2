@@ -1,6 +1,6 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
 import io.mockk.every
@@ -27,14 +27,14 @@ class MoreDetailsPresenterTest {
     @Test
     fun `openArtistInfoWindow should update the UI state with the formatted data`() {
         val artistName = "Radiohead"
-        val artistData = ArtistData.ArtistWithData("Radiohead","info" , "url", true)
+        val card = Card.ArtistCard("Radiohead","info" , "url", true)
         val expectedInfo = "[*]info"
         val expectedUIState = MoreDetailsUIState(
             expectedInfo,
-            artistData.url,
+            card.infoUrl,
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU")
-        every { repositoryMock.getArtistData(artistName) } returns artistData
-        every { formatterMock.format(artistData) } returns expectedInfo
+        every { repositoryMock.getArtistData(artistName) } returns card
+        every { formatterMock.format(card) } returns expectedInfo
 
         presenter.openArtistInfoWindow(artistName)
         Thread.sleep(20000)
@@ -46,8 +46,8 @@ class MoreDetailsPresenterTest {
     @Test
     fun `on search artist it should notify the result`() {
         val uiState: MoreDetailsUIState = presenter.uiState
-        val artistData: ArtistData = mockk()
-        every { repositoryMock.getArtistData("artistName") } returns artistData
+        val card: Card = mockk()
+        every { repositoryMock.getArtistData("artistName") } returns card
         val observableTester: (MoreDetailsUIState) -> Unit = mockk(relaxed = true)
         presenter.uiStateObservable.subscribe {
             observableTester(it)

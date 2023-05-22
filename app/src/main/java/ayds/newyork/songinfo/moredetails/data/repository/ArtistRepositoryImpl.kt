@@ -1,9 +1,9 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
 import ayds.aknewyork.external.service.data.entities.ArtistDataExternal
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.EmptyCard
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.aknewyork.external.service.data.NYTimesService
 import ayds.aknewyork.external.service.data.entities.ArtistDataExternal.ArtistWithDataExternal
@@ -14,17 +14,17 @@ internal class ArtistRepositoryImpl(
     private val nyTimesService: NYTimesService
 ): ArtistRepository {
 
-    override fun getArtistData(artistName: String): ArtistData {
+    override fun getArtistData(artistName: String): Card {
         var artistData = artistLocalStorage.getArtist(artistName)
 
         when {
-            artistData != EmptyArtistData -> markArtistAsLocal(artistData)
+            artistData != EmptyCard -> markArtistAsLocal(artistData)
             else -> {
                 try {
                     val artistDataExternal = nyTimesService.getArtistInfo(artistName)
                     artistData = adaptArtistData(artistDataExternal)
                     artistData.let {
-                        if(artistData is ArtistWithData)
+                        if(artistData is ArtistCard)
                             artistLocalStorage.saveArtist(artistData)
                     }
                 } catch (e: Exception) {
@@ -35,23 +35,22 @@ internal class ArtistRepositoryImpl(
         return artistData
     }
 
-    private fun markArtistAsLocal(artistData: ArtistData){
-        if(artistData is ArtistWithData)
-            artistData.isInDatabase = true
+    private fun markArtistAsLocal(card: Card){
+        if(card is ArtistCard)
+            card.isInDatabase = true
     }
 
-    private fun adaptArtistData(artist: ArtistDataExternal): ArtistData{
+    private fun adaptArtistData(artist: ArtistDataExternal): Card{
         return when(artist){
             is ArtistWithDataExternal -> {
-                ArtistWithData(
+                ArtistCard(
                     artist.name,
                     artist.info,
-                    artist.url,
-                    artist.isInDatabase
+                    artist.url
                 )
             }
             else ->
-                EmptyArtistData
+                EmptyCard
         }
     }
 }

@@ -6,5 +6,6 @@ private const val IMAGE_URL =
 data class MoreDetailsUIState(
     val info: String? = "",
     val url: String? = null,
-    val urlImagen: String = IMAGE_URL
+    val urlImagen: String = IMAGE_URL,
+    val sourceName: String = ""
 )
