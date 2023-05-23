@@ -11,7 +11,7 @@ import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocal
 
 internal class ArtistRepositoryImpl(
     private val artistLocalStorage: ArtistLocalStorage,
-    private val nyTimesService: NYTimesService
+    private val broker: Broker
 ): ArtistRepository {
 
     override fun getArtistData(artistName: String): Card {
@@ -21,7 +21,7 @@ internal class ArtistRepositoryImpl(
             artistData != EmptyCard -> markArtistAsLocal(artistData)
             else -> {
                 try {
-                    val artistDataExternal = nyTimesService.getArtistInfo(artistName)
+                    val artistDataExternal = broker.getArtistInfoFromNYTimes(artistName);
                     artistData = adaptArtistData(artistDataExternal)
                     artistData.let {
                         if(artistData is ArtistCard)

@@ -1,7 +1,6 @@
 package ayds.newyork.songinfo.moredetails
 
 import android.content.Context
-import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorageImpl
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.CursorToArtistDataMapperImpl
@@ -12,6 +11,10 @@ import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToView
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
 import ayds.newyork.songinfo.moredetails.presentation.view.MoreDetailsView
 import ayds.aknewyork.external.service.injector.NYTimesInjector
+import ayds.newyork.songinfo.moredetails.data.repository.*
+import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
+import ayds.newyork.songinfo.moredetails.data.repository.BrokerImpl
+import ayds.newyork.songinfo.moredetails.data.repository.ProxyNYTimesImpl
 
 object MoreDetailsInjector {
     private lateinit var artistRepository : ArtistRepository
@@ -25,7 +28,12 @@ object MoreDetailsInjector {
 
     private fun initRepository(moreDetailsView: MoreDetailsView){
         val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
-        this.artistRepository = ArtistRepositoryImpl(artistStorage, NYTimesInjector.nyTimesService)
+
+        //aca faltaria crear un proxy por cada servicio y pasarselos al broker por parametro
+        val proxyNYTimes: ProxyNYTimes = ProxyNYTimesImpl(NYTimesInjector.nyTimesService)
+
+        val broker : Broker = BrokerImpl(proxyNYTimes)
+        this.artistRepository = ArtistRepositoryImpl(artistStorage, broker)
     }
 
     private fun initPresenter(){
