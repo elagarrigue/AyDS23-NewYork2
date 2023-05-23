@@ -1,5 +1,6 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
@@ -11,34 +12,24 @@ internal class ArtistRepositoryImpl(
     private val nyTimesService: NYTimesService
 ): ArtistRepository {
 
-    override fun getArtistData(artistName: String): ArtistData? {
-        var artistData = getArtistInfoFromDatabase(artistName)
+    override fun getArtistData(artistName: String): ArtistData {
+        var artistData = artistLocalStorage.getArtist(artistName)
 
         when {
-            artistData != null -> markArtistAsLocal(artistData)
+            artistData != EmptyArtistData -> markArtistAsLocal(artistData)
             else -> {
                 try {
                     artistData = nyTimesService.getArtistInfo(artistName)
                     artistData.let {
                         if(artistData is ArtistWithData)
-                            artistLocalStorage.saveArtist(artistName, artistData.info!!)
+                            artistLocalStorage.saveArtist(artistData)
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    null
                 }
             }
         }
         return artistData
-    }
-
-    private fun getArtistInfoFromDatabase(artistName: String): ArtistData? {
-        val infoArtist: String? = artistLocalStorage.getInfo(artistName)
-        return if(infoArtist == null)
-            null
-        else {
-            val url = nyTimesService.getURLWithArtistName(artistName)
-            ArtistWithData(artistName, infoArtist, url, true)
-        }
     }
 
     private fun markArtistAsLocal(artistData: ArtistData){

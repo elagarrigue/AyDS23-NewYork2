@@ -1,23 +1,29 @@
 package ayds.newyork.songinfo.moredetails.data.repository.local.sqldb
 
 import android.database.Cursor
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.EmptyArtistData
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData.ArtistWithData
 
 interface CursorToArtistDataMapper {
 
-    fun map(cursor: Cursor): MutableList<String>
+    fun map(cursor: Cursor): ArtistData
 }
 
-internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper {
+internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
 
-    override fun map(cursor: Cursor): MutableList<String>{
-        val items: MutableList<String> = ArrayList()
-        while (cursor.moveToNext()) {
-            val info = cursor.getString(
-                cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)
-            )
-            items.add(info)
-        }
-        cursor.close()
-        return items
-    }
+    override fun map(cursor: Cursor): ArtistData =
+         with(cursor){
+             if(cursor.moveToNext()){
+                 ArtistWithData(
+                     name = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST)),
+                     info = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)),
+                     url = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_URL)),
+                     isInDatabase = true
+                 )
+             }
+             else
+                 EmptyArtistData
+         }
+
 }

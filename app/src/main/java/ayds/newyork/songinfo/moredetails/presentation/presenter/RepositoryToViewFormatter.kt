@@ -20,12 +20,12 @@ private const val HTML_FONT_FACE = "arial"
 private const val NO_RESULTS = "No Results"
 
 interface RepositoryToViewFormatter {
-    fun format(artist: ArtistData?):String?
+    fun format(artist: ArtistData):String
 }
 
 class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
 
-    override fun format(artist: ArtistData?): String? {
+    override fun format(artist: ArtistData): String {
         return when(artist){
             is ArtistWithData -> {
                 if (artist.isInDatabase)
