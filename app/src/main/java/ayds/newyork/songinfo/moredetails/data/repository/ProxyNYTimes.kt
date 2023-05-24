@@ -19,9 +19,9 @@ internal class ProxyNYTimesImpl(private val nyTimesService : NYTimesService) : P
 
     private fun adaptNYTimesInfoToCard(nyTimesInfo: ArtistDataExternal): Card {
         return if(nyTimesInfo is ArtistDataExternal.ArtistWithDataExternal) {
-            Card(nyTimesInfo.name, nyTimesInfo.info, nyTimesInfo.url, Source.NYTimes, NY_TIMES_DEFAULT_IMAGE, false)
+            Card.ArtistCard(nyTimesInfo.name, nyTimesInfo.info, nyTimesInfo.url, Source.NYTimes, NY_TIMES_DEFAULT_IMAGE, false)
         } else {
-            Card(null, null, null, Source.NYTimes, NY_TIMES_DEFAULT_IMAGE, false)
+            Card.EmptyCard
         }
     }
 

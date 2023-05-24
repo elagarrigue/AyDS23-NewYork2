@@ -19,9 +19,9 @@ internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaT
 
     private fun adaptWikipediaInfoToCard(wikipediaInfo: ArtistInfo?): Card {
         return if(wikipediaInfo == null) {
-            Card(null, null, null, Source.Wikipedia, WIKIPEDIA_DEFAULT_IMAGE, false)
+            Card.EmptyCard
         } else {
-            Card("",wikipediaInfo.description, wikipediaInfo.wikipediaURL, Source.Wikipedia, WIKIPEDIA_DEFAULT_IMAGE, false)
+            Card.ArtistCard("",wikipediaInfo.description, wikipediaInfo.wikipediaURL, Source.Wikipedia, WIKIPEDIA_DEFAULT_IMAGE, false)
         }
     }
 

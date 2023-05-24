@@ -19,9 +19,9 @@ internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Prox
 
     private fun adaptLastFMInfoToCard(lastFMInfo: LastFmArtistInfo?): Card {
         return if(lastFMInfo == null) {
-            Card(null, null, null, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
+            Card.EmptyCard
         } else {
-            Card("", lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
+            Card.ArtistCard("", lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
         }
     }
 

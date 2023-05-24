@@ -6,12 +6,16 @@ enum class Source {
     Wikipedia
 }
 
-data class Card (
-    var name: String?,
-    var description: String? = "",
-    var infoUrl: String?,
-    var source: Source,
-    var sourceLogoUrl: String = "",
-    var isLocallyStored: Boolean = false
-)
+sealed class Card {
 
+    data class ArtistCard(
+        val name: String?,
+        val description: String?,
+        val infoUrl: String,
+        var source: Source,
+        var sourceLogoUrl: String = "",
+        var isInDatabase: Boolean = false,
+    ): Card()
+
+    object EmptyCard : Card()
+}

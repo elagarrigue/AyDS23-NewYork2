@@ -4,5 +4,5 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Card
 
 interface ArtistRepository {
 
-    fun getArtistData(artistName: String): Card
+    fun getArtistData(artistName: String): List<Card>
 }

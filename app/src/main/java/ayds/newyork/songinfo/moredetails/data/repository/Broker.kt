@@ -1,10 +1,9 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
-import ayds.aknewyork.external.service.data.entities.ArtistDataExternal
 import ayds.newyork.songinfo.moredetails.domain.entities.Card
 
 interface Broker {
-    fun getCards(artistName: String):List<Card>
+    fun getCards(artistName: String): List<Card>
 }
 
 internal class BrokerImpl(
