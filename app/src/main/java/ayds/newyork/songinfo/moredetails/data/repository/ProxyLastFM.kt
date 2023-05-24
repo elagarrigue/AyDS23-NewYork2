@@ -8,7 +8,7 @@ interface ProxyLastFM {
 }
 
 internal class ProxyLastFMImpl(lastFMService : LastFMService) : ProxyLastFM {
-    override fun getArtistInfo(artistName: String) : ArtistDataExternal {
+    override fun getArtistInfo(artistName: String) : LastFmArtistInfo {
         return lastFMService.getArtistInfo(artistName);
     }
 }
