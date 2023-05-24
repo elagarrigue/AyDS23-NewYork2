@@ -1,6 +1,6 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
 import io.mockk.every
@@ -25,36 +25,23 @@ class MoreDetailsPresenterTest {
     }
 
     @Test
-    fun `openArtistInfoWindow should update the UI state with the formatted data`() {
+    fun `on search artist it should notify the result and update the UI state with the formatted data`() {
         val artistName = "Radiohead"
-        val card = Card.ArtistCard("Radiohead","info" , "url", true)
+        val artistData = ArtistData.ArtistWithData("Radiohead","info" , "url", true)
         val expectedInfo = "[*]info"
         val expectedUIState = MoreDetailsUIState(
             expectedInfo,
-            card.infoUrl,
+            artistData.url,
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVioI832nuYIXqzySD8cOXRZEcdlAj3KfxA62UEC4FhrHVe0f7oZXp3_mSFG7nIcUKhg&usqp=CAU")
-        every { repositoryMock.getArtistData(artistName) } returns card
-        every { formatterMock.format(card) } returns expectedInfo
-
-        presenter.openArtistInfoWindow(artistName)
-        Thread.sleep(20000)
-
-        val actualUiState = uiStateSubject.lastValue()
-        assertEquals(expectedUIState, actualUiState)
-    }
-
-    @Test
-    fun `on search artist it should notify the result`() {
-        val uiState: MoreDetailsUIState = presenter.uiState
-        val card: Card = mockk()
-        every { repositoryMock.getArtistData("artistName") } returns card
+        every { repositoryMock.getArtistData(artistName) } returns artistData
+        every { formatterMock.format(artistData) } returns expectedInfo
         val observableTester: (MoreDetailsUIState) -> Unit = mockk(relaxed = true)
         presenter.uiStateObservable.subscribe {
             observableTester(it)
         }
 
-        presenter.openArtistInfoWindow("artistName")
+        presenter.openArtistInfoWindow(artistName)
 
-        verify { observableTester(uiState) }
+        verify { observableTester(expectedUIState) }
     }
 }
