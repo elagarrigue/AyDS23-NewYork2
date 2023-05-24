@@ -28,11 +28,10 @@ object MoreDetailsInjector {
 
     private fun initRepository(moreDetailsView: MoreDetailsView){
         val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
-
-        //aca faltaria crear un proxy por cada servicio y pasarselos al broker por parametro
         val proxyNYTimes: ProxyNYTimes = ProxyNYTimesImpl(NYTimesInjector.nyTimesService)
-
-        val broker : Broker = BrokerImpl(proxyNYTimes)
+        val proxyLastFM: ProxyLastFM = ProxyLastFMImpl(LastFMInjector.lastFMService)
+        val proxyWikipedia: ProxyWikipedia = ProxyWikipediaImpl(WikipediaInjector.wikipediaService)
+        val broker : Broker = BrokerImpl(proxyNYTimes, proxyLastFM, proxyWikipedia)
         this.artistRepository = ArtistRepositoryImpl(artistStorage, broker)
     }
 
