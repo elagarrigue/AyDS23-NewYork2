@@ -1,19 +1,17 @@
 package ayds.newyork.songinfo.moredetails.domain.entities
 
 enum class Source {
-    NYTimes
+    NYTimes,
+    LastFm,
+    Wikipedia
 }
 
-sealed class Card {
+data class Card (
+    var name: String?,
+    var description: String? = "",
+    var infoUrl: String?,
+    var source: Source,
+    var sourceLogoUrl: String = "",
+    var isLocallyStored: Boolean = false
+)
 
-    data class ArtistCard(
-        val name: String?,
-        val description: String?,
-        val infoUrl: String,
-        var source: Source = Source.NYTimes,
-        var sourceLogoUrl: String = "",
-        var isInDatabase: Boolean = false,
-    ): Card()
-
-    object EmptyCard : Card()
-}

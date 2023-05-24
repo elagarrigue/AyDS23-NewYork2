@@ -1,11 +1,10 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
 import ayds.aknewyork.external.service.data.entities.ArtistDataExternal
+import ayds.newyork.songinfo.moredetails.domain.entities.Card
 
 interface Broker {
-    fun getArtistInfoFromNYTimes(artistName: String): ArtistDataExternal
-    fun getArtistInfoFromLastFM(artistName: String): ArtistDataExternal
-    fun getArtistInfoFromWikipedia(artistName: String): ArtistDataExternal
+    fun getCards(artistName: String):List<Card>
 }
 
 internal class BrokerImpl(
@@ -14,15 +13,13 @@ internal class BrokerImpl(
     private val proxyWikipedia: ProxyWikipedia
 ) : Broker {
 
-    override fun getArtistInfoFromNYTimes(artistName: String): ArtistDataExternal {
-        return proxyNYTimes.getArtistInfo(artistName);
-    }
+    override fun getCards(artistName: String): List<Card> {
+        val cards: MutableList<Card> = mutableListOf()
 
-    override fun getArtistInfoFromLastFM(artistName: String): ArtistDataExternal {
-        return proxyLastFM.getArtistInfo(artistName);
-    }
+        cards.add(proxyNYTimes.getCard(artistName))
+        cards.add(proxyLastFM.getCard(artistName))
+        cards.add(proxyWikipedia.getCard(artistName))
 
-    override fun getArtistInfoFromWikipedia(artistName: String): ArtistDataExternal {
-        return proxyWikipedia.getArtistInfo(artistName);
+        return cards
     }
 }
