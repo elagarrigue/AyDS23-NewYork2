@@ -8,7 +8,7 @@ interface ProxyWikipedia {
 }
 
 internal class ProxyWikipediaImpl(wikipediaService : WikipediaService) : ProxyWikipedia {
-    override fun getArtistInfo(artistName: String) : ArtistDataExternal {
-        return wikipediaService.getArtistInfo(artistName);
+    override fun getArtistInfo(artistName: String) : ArtistInfo {
+        return wikipediaService.getInfo(artistName);
     }
 }
