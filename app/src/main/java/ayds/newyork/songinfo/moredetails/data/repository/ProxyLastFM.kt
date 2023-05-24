@@ -1,4 +1,6 @@
 package ayds.newyork.songinfo.moredetails.data.repository
+import ayds.lisboa3.submodule.lastFm.LastFmArtistInfo
+import ayds.lisboa3.submodule.lastFm.LastFmService
 import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
@@ -8,10 +10,10 @@ interface ProxyLastFM {
     fun getCard(artistName: String): Card
 }
 
-internal class ProxyLastFMImpl(lastFMService : LastFMService) : ProxyLastFM {
+internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : ProxyLastFM {
 
     override fun getCard(artistName: String): Card {
-        val lastInfo = lastFMService.getArtistInfo(artistName)
+        val lastInfo = lastFmService.getArtistInfo(artistName)
         return adaptLastFMInfoToCard(lastInfo)
     }
 
@@ -19,7 +21,7 @@ internal class ProxyLastFMImpl(lastFMService : LastFMService) : ProxyLastFM {
         return if(lastFMInfo == null) {
             Card(null, null, null, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
         } else {
-            Card(lastFMInfo.name, lastFMInfo.info, lastFMInfo.url, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
+            Card("", lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
         }
     }
 

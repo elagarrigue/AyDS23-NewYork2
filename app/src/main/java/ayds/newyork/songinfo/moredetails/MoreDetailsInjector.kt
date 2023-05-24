@@ -15,6 +15,8 @@ import ayds.newyork.songinfo.moredetails.data.repository.*
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
 import ayds.newyork.songinfo.moredetails.data.repository.BrokerImpl
 import ayds.newyork.songinfo.moredetails.data.repository.ProxyNYTimesImpl
+import ayds.winchester2.wikipediaexternal.injector.WikipediaInjector
+import ayds.lisboa3.submodule.lastFm.LastFmInjector;
 
 object MoreDetailsInjector {
     private lateinit var artistRepository : ArtistRepository
@@ -29,7 +31,7 @@ object MoreDetailsInjector {
     private fun initRepository(moreDetailsView: MoreDetailsView){
         val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
         val proxyNYTimes: ProxyNYTimes = ProxyNYTimesImpl(NYTimesInjector.nyTimesService)
-        val proxyLastFM: ProxyLastFM = ProxyLastFMImpl(LastFMInjector.getService())
+        val proxyLastFM: ProxyLastFM = ProxyLastFMImpl(LastFmInjector.getService())
         val proxyWikipedia: ProxyWikipedia = ProxyWikipediaImpl(WikipediaInjector.wikipediaTrackService)
         val broker : Broker = BrokerImpl(proxyNYTimes, proxyLastFM, proxyWikipedia)
         this.artistRepository = ArtistRepositoryImpl(artistStorage, broker)
