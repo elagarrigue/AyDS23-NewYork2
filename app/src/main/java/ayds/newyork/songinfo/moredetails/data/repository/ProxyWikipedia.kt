@@ -4,8 +4,6 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import ayds.winchester2.wikipediaexternal.data.wikipedia.WikipediaTrackService
 import ayds.winchester2.wikipediaexternal.data.wikipedia.entity.ArtistInfo
 
-const val WIKIPEDIA_DEFAULT_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Wikipedia-logo-v2-es.png"
-
 interface ProxyWikipedia {
     fun getCard(artistName: String): Card
 }
@@ -21,7 +19,7 @@ internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaT
         return if(wikipediaInfo == null) {
             Card.EmptyCard
         } else {
-            Card.ArtistCard("",wikipediaInfo.description, wikipediaInfo.wikipediaURL, Source.Wikipedia, WIKIPEDIA_DEFAULT_IMAGE, false)
+            Card.ArtistCard("",wikipediaInfo.description, wikipediaInfo.wikipediaURL, Source.Wikipedia, wikipediaInfo.wikipediaLogoURL, false)
         }
     }
 

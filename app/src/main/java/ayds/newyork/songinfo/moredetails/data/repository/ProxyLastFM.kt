@@ -4,8 +4,6 @@ import ayds.lisboa3.submodule.lastFm.LastFmService
 import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
-const val LAST_FM_DEFAULT_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
-
 interface ProxyLastFM {
     fun getCard(artistName: String): Card
 }
@@ -21,7 +19,7 @@ internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Prox
         return if(lastFMInfo == null) {
             Card.EmptyCard
         } else {
-            Card.ArtistCard("", lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, LAST_FM_DEFAULT_IMAGE, false)
+            Card.ArtistCard("", lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, lastFMInfo.logo, false)
         }
     }
 

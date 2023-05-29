@@ -15,9 +15,11 @@ internal class BrokerImpl(
     override fun getCards(artistName: String): List<Card> {
         val cards: MutableList<Card> = mutableListOf()
 
-        cards.add(proxyNYTimes.getCard(artistName))
-        cards.add(proxyLastFM.getCard(artistName))
-        cards.add(proxyWikipedia.getCard(artistName))
+        with(cards){
+            add(proxyNYTimes.getCard(artistName))
+            add(proxyLastFM.getCard(artistName))
+            add(proxyWikipedia.getCard(artistName))
+        }
 
         return cards
     }

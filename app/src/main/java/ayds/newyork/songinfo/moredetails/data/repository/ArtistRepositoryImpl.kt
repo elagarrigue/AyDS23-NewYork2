@@ -18,8 +18,8 @@ internal class ArtistRepositoryImpl(
             artistData.hasAllServicesAsSource() -> markArtistCardsAsLocal(artistData)
             else -> {
                 try {
-                    val artistDataExternal = broker.getCards(artistName);
-                    for (card in artistDataExternal) {
+                    artistData = broker.getCards(artistName);
+                    for (card in artistData) {
                         if(card is ArtistCard){
                             artistLocalStorage.saveArtist(card)
                         }
@@ -29,6 +29,7 @@ internal class ArtistRepositoryImpl(
                 }
             }
         }
+
         return artistData
     }
 

@@ -9,7 +9,7 @@ enum class Source {
 sealed class Card {
 
     data class ArtistCard(
-        val name: String?,
+        var name: String?,
         val description: String?,
         val infoUrl: String,
         var source: Source,
