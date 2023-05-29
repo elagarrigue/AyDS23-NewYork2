@@ -41,6 +41,7 @@ internal class MoreDetailsPresenterImpl(private val repository: ArtistRepository
             is ArtistCard -> {
                 uiState = uiState.copy(url = artist.infoUrl, sourceName = artist.source.toString())
             }
+            else -> {}
         }
     }
 }
