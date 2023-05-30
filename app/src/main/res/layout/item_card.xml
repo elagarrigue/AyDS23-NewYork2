@@ -8,8 +8,8 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop" />
+        android:layout_height="150dp"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/sourceLabelTextView"

@@ -112,7 +112,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
             sourceLabelTextView.text = "Source: "
             sourceTextView.text = card.source.toString()
             openUrlButton.setOnClickListener {
-                openExternalUrl(card.sourceLogoUrl)
+                openExternalUrl(card.infoUrl)
             }
         }
 
