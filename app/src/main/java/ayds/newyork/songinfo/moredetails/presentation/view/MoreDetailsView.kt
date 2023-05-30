@@ -105,11 +105,13 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         private val imageView: ImageView = itemView.findViewById(R.id.imageView)
         private val sourceLabelTextView: TextView = itemView.findViewById(R.id.sourceLabelTextView)
         private val sourceTextView: TextView = itemView.findViewById(R.id.sourceTextView)
+        private val description: TextView = itemView.findViewById(R.id.descriptionTextView)
         private val openUrlButton: Button = itemView.findViewById(R.id.openUrlButton)
 
         fun bind(card: ArtistCard) {
             Picasso.get().load(card.sourceLogoUrl).into(imageView)
             sourceLabelTextView.text = "Source: "
+            description.text = card.description
             sourceTextView.text = card.source.toString()
             openUrlButton.setOnClickListener {
                 openExternalUrl(card.infoUrl)

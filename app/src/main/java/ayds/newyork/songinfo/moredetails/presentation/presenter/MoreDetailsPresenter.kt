@@ -38,12 +38,11 @@ internal class MoreDetailsPresenterImpl(
     }
 
     private fun updateUIState(artist: Card) {
-        uiState = uiState.copy(info = formatter.format(artist))
+        //uiState = uiState.copy(info = formatter.format(artist))
 
         when (artist) {
             is ArtistCard -> {
                 uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(artist) })
-
             }
             else -> {}
         }
