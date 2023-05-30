@@ -4,11 +4,7 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import ayds.winchester2.wikipediaexternal.data.wikipedia.WikipediaTrackService
 import ayds.winchester2.wikipediaexternal.data.wikipedia.entity.ArtistInfo
 
-interface ProxyWikipedia {
-    fun getCard(artistName: String): Card
-}
-
-internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaTrackService) : ProxyWikipedia {
+internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaTrackService) : Proxy {
 
     override fun getCard(artistName: String): Card {
         val wikipediaInfo = wikipediaTrackService.getInfo(artistName)

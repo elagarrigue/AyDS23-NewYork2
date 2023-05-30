@@ -6,11 +6,11 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
 
-interface ProxyNYTimes {
+interface Proxy {
     fun getCard(artistName: String): Card
 }
 
-internal class ProxyNYTimesImpl(private val nyTimesService : NYTimesService) : ProxyNYTimes {
+internal class ProxyNYTimesImpl(private val nyTimesService : NYTimesService) : Proxy {
 
     override fun getCard(artistName: String): Card {
         val nyInfo = nyTimesService.getArtistInfo(artistName)

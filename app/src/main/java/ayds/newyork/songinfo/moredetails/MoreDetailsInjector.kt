@@ -16,29 +16,37 @@ import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
 import ayds.newyork.songinfo.moredetails.data.repository.BrokerImpl
 import ayds.newyork.songinfo.moredetails.data.repository.ProxyNYTimesImpl
 import ayds.winchester2.wikipediaexternal.injector.WikipediaInjector
-import ayds.lisboa3.submodule.lastFm.LastFmInjector;
+import ayds.lisboa3.submodule.lastFm.LastFmInjector
 
 object MoreDetailsInjector {
-    private lateinit var artistRepository : ArtistRepository
-    lateinit var presenter : MoreDetailsPresenter
+    private lateinit var artistRepository: ArtistRepository
+    lateinit var presenter: MoreDetailsPresenter
 
-    fun init(moreDetailsView: MoreDetailsView){
+    fun init(moreDetailsView: MoreDetailsView) {
         initRepository(moreDetailsView)
         initPresenter()
         moreDetailsView.setPresenter(presenter)
     }
 
-    private fun initRepository(moreDetailsView: MoreDetailsView){
-        val artistStorage: ArtistLocalStorage = ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
-        val proxyNYTimes: ProxyNYTimes = ProxyNYTimesImpl(NYTimesInjector.nyTimesService)
-        val proxyLastFM: ProxyLastFM = ProxyLastFMImpl(LastFmInjector.getService())
-        val proxyWikipedia: ProxyWikipedia = ProxyWikipediaImpl(WikipediaInjector.wikipediaTrackService)
-        val broker : Broker = BrokerImpl(proxyNYTimes, proxyLastFM, proxyWikipedia)
+    private fun initRepository(moreDetailsView: MoreDetailsView) {
+        val artistStorage: ArtistLocalStorage =
+            ArtistLocalStorageImpl(moreDetailsView as Context, CursorToArtistDataMapperImpl())
+        val proxyNYTimes: Proxy = ProxyNYTimesImpl(NYTimesInjector.nyTimesService)
+        val proxyLastFM: Proxy = ProxyLastFMImpl(LastFmInjector.getService())
+        val proxyWikipedia: Proxy =
+            ProxyWikipediaImpl(WikipediaInjector.wikipediaTrackService)
+
+        val proxyList: MutableList<Proxy> = mutableListOf()
+        proxyList.add(proxyNYTimes)
+        proxyList.add(proxyLastFM)
+        proxyList.add(proxyWikipedia)
+
+        val broker: Broker = BrokerImpl(proxyList)
         this.artistRepository = ArtistRepositoryImpl(artistStorage, broker)
     }
 
-    private fun initPresenter(){
-        val format : RepositoryToViewFormatter = RepositoryToViewFormatterImpl()
+    private fun initPresenter() {
+        val format: RepositoryToViewFormatter = RepositoryToViewFormatterImpl()
         this.presenter = MoreDetailsPresenterImpl(artistRepository, format)
     }
 }

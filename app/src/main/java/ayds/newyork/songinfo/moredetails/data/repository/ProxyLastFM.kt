@@ -4,11 +4,7 @@ import ayds.lisboa3.submodule.lastFm.LastFmService
 import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
-interface ProxyLastFM {
-    fun getCard(artistName: String): Card
-}
-
-internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : ProxyLastFM {
+internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Proxy {
 
     override fun getCard(artistName: String): Card {
         val lastInfo = lastFmService.getArtistInfo(artistName)
