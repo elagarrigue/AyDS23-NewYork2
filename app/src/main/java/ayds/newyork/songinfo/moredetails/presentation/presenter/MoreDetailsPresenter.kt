@@ -38,11 +38,19 @@ internal class MoreDetailsPresenterImpl(
     }
 
     private fun updateUIState(artist: Card) {
-        //uiState = uiState.copy(info = formatter.format(artist))
-
         when (artist) {
             is ArtistCard -> {
-                uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(artist) })
+                val formattedArtist =
+                    ArtistCard(
+                        name = artist.name,
+                        description = formatter.format(artist),
+                        infoUrl = artist.infoUrl,
+                        source = artist.source,
+                        sourceLogoUrl = artist.sourceLogoUrl,
+                        isInDatabase = artist.isInDatabase
+
+                    )
+                uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(formattedArtist) })
             }
             else -> {}
         }

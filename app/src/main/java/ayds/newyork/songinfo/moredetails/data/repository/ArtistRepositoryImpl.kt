@@ -15,7 +15,7 @@ internal class ArtistRepositoryImpl(
         var artistData = artistLocalStorage.getArtist(artistName)
 
         when {
-            artistData.hasAllServicesAsSource() -> markArtistCardsAsLocal(artistData)
+            artistData.hasAnyServiceAsSource() -> markArtistCardsAsLocal(artistData)
             else -> {
                 try {
                     artistData = broker.getCards(artistName);
@@ -37,6 +37,6 @@ internal class ArtistRepositoryImpl(
         artistCards.forEach { if(it is ArtistCard) it.isInDatabase = true}
     }
 
-    private fun List<Card>.hasAllServicesAsSource() = (this.size == Source.values().size)
+    private fun List<Card>.hasAnyServiceAsSource() = (this.isNotEmpty())
 
 }

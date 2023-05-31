@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ayds.newyork.songinfo.R
@@ -111,7 +112,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
         fun bind(card: ArtistCard) {
             Picasso.get().load(card.sourceLogoUrl).into(imageView)
             sourceLabelTextView.text = "Source: "
-            description.text = card.description
+            description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
             sourceTextView.text = card.source.toString()
             openUrlButton.setOnClickListener {
                 openExternalUrl(card.infoUrl)

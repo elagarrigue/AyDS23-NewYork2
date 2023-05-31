@@ -15,7 +15,7 @@ internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
     override fun map(cursor: Cursor): List<Card>  {
         var cards = mutableListOf<Card>()
         with(cursor){
-            if(cursor.moveToNext()){
+            while(moveToNext()){
                 cards.add(ArtistCard(
                     name = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST)),
                     description = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)),
