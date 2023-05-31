@@ -21,7 +21,8 @@ internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
                     description = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)),
                     infoUrl = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_URL)),
                     isInDatabase = true,
-                    source = Source.values()[getInt(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_URL))]
+                    source = Source.values()[getInt(cursor.getColumnIndexOrThrow(COLUMN_SOURCE))],
+                    sourceLogoUrl = getString(cursor.getColumnIndexOrThrow(COLUMN_LOGO_URL))
                 ))
             }
         }
