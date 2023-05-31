@@ -26,6 +26,7 @@ internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
                 ))
             }
         }
+        cursor.close()
         return cards
     }
 }
