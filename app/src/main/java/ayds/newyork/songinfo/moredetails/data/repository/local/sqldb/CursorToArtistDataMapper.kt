@@ -17,7 +17,6 @@ internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
         with(cursor){
             while(moveToNext()){
                 cards.add(ArtistCard(
-                    name = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST)),
                     description = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_INFO)),
                     infoUrl = getString(cursor.getColumnIndexOrThrow(COLUMN_ARTIST_URL)),
                     isInDatabase = true,

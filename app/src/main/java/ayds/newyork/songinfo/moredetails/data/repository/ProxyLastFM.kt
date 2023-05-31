@@ -5,10 +5,8 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
 internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Proxy {
-    private lateinit var artistName: String
     override fun getCard(artistName: String): Card {
         val lastInfo = lastFmService.getArtistInfo(artistName)
-        this.artistName = artistName
         return adaptLastFMInfoToCard(lastInfo)
     }
 
@@ -16,7 +14,7 @@ internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Prox
         return if(lastFMInfo == null) {
             Card.EmptyCard
         } else {
-            Card.ArtistCard(artistName, lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, lastFMInfo.logo, false)
+            Card.ArtistCard(lastFMInfo.bioContent, lastFMInfo.url, Source.LastFm, lastFMInfo.logo, false)
         }
     }
 

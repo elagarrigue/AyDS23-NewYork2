@@ -32,18 +32,17 @@ internal class MoreDetailsPresenterImpl(
     private fun loadArtistInfo(artistName: String) {
         val artistData = repository.getArtistData(artistName)
         for (card in artistData) {
-            updateUIState(card)
+            updateUIState(card, artistName)
         }
         uiStateObservable.notify(uiState)
     }
 
-    private fun updateUIState(artist: Card) {
+    private fun updateUIState(artist: Card, artistName: String) {
         when (artist) {
             is ArtistCard -> {
                 val formattedArtist =
                     ArtistCard(
-                        name = artist.name,
-                        description = formatter.format(artist),
+                        description = formatter.format(artist, artistName),
                         infoUrl = artist.infoUrl,
                         source = artist.source,
                         sourceLogoUrl = artist.sourceLogoUrl,

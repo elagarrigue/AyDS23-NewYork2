@@ -21,7 +21,7 @@ internal class ArtistRepositoryImpl(
                     artistData = broker.getCards(artistName);
                     for (card in artistData) {
                         if(card is ArtistCard){
-                            artistLocalStorage.saveArtist(card)
+                            artistLocalStorage.saveArtist(artistName, card)
                         }
                     }
                 } catch (e: Exception) {
