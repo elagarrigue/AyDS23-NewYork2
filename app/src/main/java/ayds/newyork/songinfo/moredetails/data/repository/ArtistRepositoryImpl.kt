@@ -1,17 +1,15 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage
-import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
 internal class ArtistRepositoryImpl(
     private val artistLocalStorage: ArtistLocalStorage,
     private val broker: Broker
 ): ArtistRepository {
 
-    override fun getArtistData(artistName: String): List<Card> {
+    override fun getArtistData(artistName: String): List<ArtistCard> {
         var artistData = artistLocalStorage.getArtist(artistName)
 
         when {
@@ -20,9 +18,7 @@ internal class ArtistRepositoryImpl(
                 try {
                     artistData = broker.getCards(artistName);
                     for (card in artistData) {
-                        if(card is ArtistCard){
-                            artistLocalStorage.saveArtist(artistName, card)
-                        }
+                        artistLocalStorage.saveArtist(artistName, card)
                     }
                 } catch (e: Exception) {
                     null
@@ -33,10 +29,10 @@ internal class ArtistRepositoryImpl(
         return artistData
     }
 
-    private fun markArtistCardsAsLocal(artistCards: List<Card>) {
-        artistCards.forEach { if(it is ArtistCard) it.isInDatabase = true}
+    private fun markArtistCardsAsLocal(artistCards: List<ArtistCard>) {
+        artistCards.forEach { it.isInDatabase = true}
     }
 
-    private fun List<Card>.hasAnyServiceAsSource() = (this.isNotEmpty())
+    private fun List<ArtistCard>.hasAnyServiceAsSource() = (this.isNotEmpty())
 
 }

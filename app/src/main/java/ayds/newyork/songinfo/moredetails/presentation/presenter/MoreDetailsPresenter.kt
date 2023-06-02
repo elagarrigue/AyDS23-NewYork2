@@ -1,6 +1,5 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
@@ -37,21 +36,16 @@ internal class MoreDetailsPresenterImpl(
         uiStateObservable.notify(uiState)
     }
 
-    private fun updateUIState(artist: Card, artistName: String) {
-        when (artist) {
-            is ArtistCard -> {
-                val formattedArtist =
-                    ArtistCard(
-                        description = formatter.format(artist, artistName),
-                        infoUrl = artist.infoUrl,
-                        source = artist.source,
-                        sourceLogoUrl = artist.sourceLogoUrl,
-                        isInDatabase = artist.isInDatabase
+    private fun updateUIState(artist: ArtistCard, artistName: String) {
+        val formattedArtist =
+            ArtistCard(
+                description = formatter.format(artist, artistName),
+                infoUrl = artist.infoUrl,
+                source = artist.source,
+                sourceLogoUrl = artist.sourceLogoUrl,
+                isInDatabase = artist.isInDatabase
 
-                    )
-                uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(formattedArtist) })
-            }
-            else -> {}
-        }
+            )
+        uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(formattedArtist) })
     }
 }

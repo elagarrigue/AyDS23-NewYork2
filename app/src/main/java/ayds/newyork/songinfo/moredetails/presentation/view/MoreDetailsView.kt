@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ayds.newyork.songinfo.R
 import ayds.newyork.songinfo.moredetails.MoreDetailsInjector
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenter
@@ -78,9 +77,9 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
 
     private class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
 
-        private var cards: List<Card> = emptyList()
+        private var cards: List<ArtistCard> = emptyList()
 
-        fun setCards(cards: List<Card>) {
+        fun setCards(cards: List<ArtistCard>) {
             this.cards = cards
             notifyDataSetChanged()
         }
@@ -93,8 +92,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
 
         override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
             val card = cards[position]
-            if(card is ArtistCard)
-                holder.bind(card)
+            holder.bind(card)
         }
 
         override fun getItemCount(): Int {

@@ -1,19 +1,18 @@
 package ayds.newyork.songinfo.moredetails.data.repository.local.sqldb
 
 import android.database.Cursor
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
 interface CursorToArtistDataMapper {
 
-    fun map(cursor: Cursor): List<Card>
+    fun map(cursor: Cursor): List<ArtistCard>
 }
 
 internal class CursorToArtistDataMapperImpl : CursorToArtistDataMapper  {
 
-    override fun map(cursor: Cursor): List<Card>  {
-        var cards = mutableListOf<Card>()
+    override fun map(cursor: Cursor): List<ArtistCard>  {
+        var cards = mutableListOf<ArtistCard>()
         with(cursor){
             while(moveToNext()){
                 cards.add(ArtistCard(

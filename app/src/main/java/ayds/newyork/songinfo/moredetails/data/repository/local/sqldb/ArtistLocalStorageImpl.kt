@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 
 private const val DATABASE_NAME = "dictionary.db"
@@ -17,7 +16,7 @@ interface ArtistLocalStorage {
 
     fun saveArtist(artistName: String, artist: ArtistCard)
 
-    fun getArtist(artist: String?): List<Card>
+    fun getArtist(artist: String?): List<ArtistCard>
 }
 
 internal class ArtistLocalStorageImpl(context: Context, private val cursorToArtistDataMapper: CursorToArtistDataMapper) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION),
@@ -55,7 +54,7 @@ internal class ArtistLocalStorageImpl(context: Context, private val cursorToArti
         return values
     }
 
-    override fun getArtist(artist: String?): List<Card>  {
+    override fun getArtist(artist: String?): List<ArtistCard>  {
         return cursorToArtistDataMapper.map(createCursor(this, artist))
     }
 

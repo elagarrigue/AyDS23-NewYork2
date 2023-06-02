@@ -16,5 +16,4 @@ sealed class Card {
         var isInDatabase: Boolean = false,
     ): Card()
 
-    object EmptyCard : Card()
 }
