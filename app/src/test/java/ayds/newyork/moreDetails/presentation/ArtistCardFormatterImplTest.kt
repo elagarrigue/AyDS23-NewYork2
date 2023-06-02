@@ -1,6 +1,5 @@
 package ayds.newyork.moreDetails.presentation
 
-import ayds.newyork.songinfo.moredetails.domain.entities.Card.EmptyCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatter
 import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
