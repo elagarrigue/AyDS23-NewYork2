@@ -16,11 +16,11 @@ interface MoreDetailsPresenter {
 
 internal class MoreDetailsPresenterImpl(
     private val repository: ArtistRepository,
-    private val formatter: RepositoryToViewFormatter
+    private val formatter: ArtistCardFormatter
 ) : MoreDetailsPresenter {
     override val onUIStateSubject = Subject<MoreDetailsUIState>()
     override val uiStateObservable = onUIStateSubject
-    override var uiState: MoreDetailsUIState = MoreDetailsUIState(mutableListOf())
+    override var uiState: MoreDetailsUIState = MoreDetailsUIState()
 
     override fun openArtistInfoWindow(artistName: String) {
         Thread {
@@ -30,22 +30,17 @@ internal class MoreDetailsPresenterImpl(
 
     private fun loadArtistInfo(artistName: String) {
         val artistData = repository.getArtistData(artistName)
-        for (card in artistData) {
-            updateUIState(card, artistName)
-        }
-        uiStateObservable.notify(uiState)
-    }
-
-    private fun updateUIState(artist: ArtistCard, artistName: String) {
-        val formattedArtist =
-            ArtistCard(
+        val formattedArtists = artistData.map { artist ->
+            val formattedArtist = ArtistCard(
                 description = formatter.format(artist, artistName),
                 infoUrl = artist.infoUrl,
                 source = artist.source,
                 sourceLogoUrl = artist.sourceLogoUrl,
                 isInDatabase = artist.isInDatabase
-
             )
-        uiState = uiState.copy(artistCards = uiState.artistCards.toMutableList().apply { add(formattedArtist) })
+            formattedArtist
+        }
+        uiState.artistCards = formattedArtists
+        uiStateObservable.notify(uiState)
     }
 }

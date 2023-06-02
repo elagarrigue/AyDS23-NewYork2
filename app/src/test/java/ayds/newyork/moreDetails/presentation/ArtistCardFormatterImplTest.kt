@@ -1,15 +1,15 @@
 package ayds.newyork.moreDetails.presentation
 
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
-import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatter
-import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
+import ayds.newyork.songinfo.moredetails.presentation.presenter.ArtistCardFormatter
+import ayds.newyork.songinfo.moredetails.presentation.presenter.ArtistCardFormatterImpl
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import io.mockk.mockk
 
-class RepositoryToViewFormatterImplTest {
+class ArtistCardFormatterImplTest {
 
-    private val formatter: RepositoryToViewFormatter = RepositoryToViewFormatterImpl()
+    private val formatter: ArtistCardFormatter = ArtistCardFormatterImpl()
 
     @Test
     fun `given artist with data in database returns formatted text with local repository marker`() {

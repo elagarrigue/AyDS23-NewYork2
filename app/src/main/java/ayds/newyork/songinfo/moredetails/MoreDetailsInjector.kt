@@ -7,8 +7,8 @@ import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.CursorToArt
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenter
 import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenterImpl
-import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatter
-import ayds.newyork.songinfo.moredetails.presentation.presenter.RepositoryToViewFormatterImpl
+import ayds.newyork.songinfo.moredetails.presentation.presenter.ArtistCardFormatter
+import ayds.newyork.songinfo.moredetails.presentation.presenter.ArtistCardFormatterImpl
 import ayds.newyork.songinfo.moredetails.presentation.view.MoreDetailsView
 import ayds.aknewyork.external.service.injector.NYTimesInjector
 import ayds.newyork.songinfo.moredetails.data.repository.*
@@ -46,7 +46,7 @@ object MoreDetailsInjector {
     }
 
     private fun initPresenter() {
-        val format: RepositoryToViewFormatter = RepositoryToViewFormatterImpl()
+        val format: ArtistCardFormatter = ArtistCardFormatterImpl()
         this.presenter = MoreDetailsPresenterImpl(artistRepository, format)
     }
 }

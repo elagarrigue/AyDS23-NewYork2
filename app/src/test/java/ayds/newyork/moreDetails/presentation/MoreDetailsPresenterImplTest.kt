@@ -6,7 +6,6 @@ import ayds.observer.Subject
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository as ArtistRepository
@@ -16,7 +15,7 @@ class MoreDetailsPresenterTest {
     private lateinit var uiStateSubject: Subject<MoreDetailsUIState>
     private lateinit var presenter: MoreDetailsPresenter
     private val repositoryMock: ArtistRepository = mockk()
-    private val formatterMock: RepositoryToViewFormatter = mockk()
+    private val formatterMock: ArtistCardFormatter = mockk()
 
     @Before
     fun setUp() {

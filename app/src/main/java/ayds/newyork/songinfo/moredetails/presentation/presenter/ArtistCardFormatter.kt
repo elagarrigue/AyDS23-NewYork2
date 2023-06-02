@@ -18,11 +18,11 @@ private const val HTML_DIV_WIDTH = "400"
 private const val HTML_FONT_FACE = "arial"
 private const val NO_RESULTS = "No Results"
 
-interface RepositoryToViewFormatter {
+interface ArtistCardFormatter {
     fun format(artist: ArtistCard, artistName: String):String
 }
 
-class RepositoryToViewFormatterImpl:RepositoryToViewFormatter {
+class ArtistCardFormatterImpl:ArtistCardFormatter {
 
     override fun format(artist: ArtistCard, artistName: String): String {
         return if (artist.isInDatabase)
