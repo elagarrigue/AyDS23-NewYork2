@@ -48,11 +48,17 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(card: Card.ArtistCard) {
         Picasso.get().load(card.sourceLogoUrl).into(imageView)
-        sourceLabelTextView.text = "Source: "
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         sourceTextView.text = card.source.toString()
-        openUrlButton.setOnClickListener {
-            openExternalUrl(card.infoUrl)
+        if(card.infoUrl == ""){
+            sourceLabelTextView.visibility = View.GONE
+            openUrlButton.visibility = View.GONE
+        }else {
+            sourceLabelTextView.visibility = View.VISIBLE
+            openUrlButton.visibility = View.VISIBLE
+            openUrlButton.setOnClickListener {
+                openExternalUrl(card.infoUrl)
+            }
         }
     }
 

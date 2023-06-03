@@ -10,6 +10,10 @@ internal class ProxyLastFMImpl(private val lastFmService : LastFmService) : Prox
         return adaptLastFMInfoToCard(lastInfo)
     }
 
+    override fun getMessageCard(): ArtistCard {
+        return ArtistCard(DESCRIPTION_ERROR,"", Source.Error, IMG_ERROR,false)
+    }
+
     private fun adaptLastFMInfoToCard(lastFMInfo: LastFmArtistInfo?): ArtistCard? {
         return if(lastFMInfo == null) {
             null

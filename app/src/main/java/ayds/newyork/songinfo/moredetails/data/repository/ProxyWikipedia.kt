@@ -11,6 +11,10 @@ internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaT
         return adaptWikipediaInfoToCard(wikipediaInfo)
     }
 
+    override fun getMessageCard(): ArtistCard {
+        return ArtistCard(DESCRIPTION_ERROR,"",Source.Error, IMG_ERROR,false)
+    }
+
     private fun adaptWikipediaInfoToCard(wikipediaInfo: ArtistInfo?): ArtistCard? {
         return if(wikipediaInfo == null) {
             null

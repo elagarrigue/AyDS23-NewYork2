@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Source: "
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/sourceTextView"
@@ -36,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="View Full Article" />
+        android:text="View Full Article"
+        android:visibility="gone" />
 
 </LinearLayout>

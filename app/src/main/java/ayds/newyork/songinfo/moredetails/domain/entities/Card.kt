@@ -3,7 +3,8 @@ package ayds.newyork.songinfo.moredetails.domain.entities
 enum class Source {
     NYTimes,
     LastFm,
-    Wikipedia
+    Wikipedia,
+    Error
 }
 
 sealed class Card {
