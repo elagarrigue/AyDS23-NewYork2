@@ -2,7 +2,6 @@ package ayds.newyork.songinfo.moredetails.presentation.presenter
 
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
-import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
 import ayds.observer.Observable
 

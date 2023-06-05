@@ -1,7 +1,6 @@
 package ayds.newyork.songinfo.moredetails.presentation.presenter
 
 import ayds.newyork.songinfo.moredetails.domain.entities.ArtistData
-import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
 import ayds.observer.Subject
 import io.mockk.every
 import io.mockk.mockk

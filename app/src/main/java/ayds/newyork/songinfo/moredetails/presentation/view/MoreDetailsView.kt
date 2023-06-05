@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ayds.newyork.songinfo.R
 import ayds.newyork.songinfo.moredetails.MoreDetailsInjector
-import ayds.newyork.songinfo.moredetails.presentation.MoreDetailsUIState
+import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsUIState
 import ayds.newyork.songinfo.moredetails.presentation.presenter.MoreDetailsPresenter
 import ayds.observer.Observer
 
