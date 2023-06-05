@@ -2,6 +2,8 @@ package ayds.newyork.songinfo.moredetails.data.repository
 import ayds.aknewyork.external.service.data.NYTimesService
 import ayds.aknewyork.external.service.data.entities.ArtistDataExternal
 import ayds.aknewyork.external.service.data.entities.NYT_LOGO_URL
+import ayds.newyork.songinfo.moredetails.data.repository.external.DESCRIPTION_ERROR
+import ayds.newyork.songinfo.moredetails.data.repository.external.IMG_ERROR
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 

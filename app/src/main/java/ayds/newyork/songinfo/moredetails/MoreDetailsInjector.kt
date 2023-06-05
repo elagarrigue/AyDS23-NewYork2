@@ -13,10 +13,11 @@ import ayds.newyork.songinfo.moredetails.presentation.view.MoreDetailsView
 import ayds.aknewyork.external.service.injector.NYTimesInjector
 import ayds.newyork.songinfo.moredetails.data.repository.*
 import ayds.newyork.songinfo.moredetails.data.repository.ArtistRepositoryImpl
-import ayds.newyork.songinfo.moredetails.data.repository.BrokerImpl
+import ayds.newyork.songinfo.moredetails.data.repository.external.BrokerImpl
 import ayds.newyork.songinfo.moredetails.data.repository.ProxyNYTimesImpl
 import ayds.winchester2.wikipediaexternal.injector.WikipediaInjector
 import ayds.lisboa3.submodule.lastFm.LastFmInjector
+import ayds.newyork.songinfo.moredetails.data.repository.external.Broker
 
 object MoreDetailsInjector {
     private lateinit var artistRepository: ArtistRepository

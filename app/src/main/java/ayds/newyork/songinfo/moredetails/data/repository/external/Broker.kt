@@ -1,5 +1,6 @@
-package ayds.newyork.songinfo.moredetails.data.repository
+package ayds.newyork.songinfo.moredetails.data.repository.external
 
+import ayds.newyork.songinfo.moredetails.data.repository.Proxy
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 
 const val IMG_ERROR = "app/src/main/java/ayds/newyork/songinfo/moredetails/data/repository/local/sqldb/img/error.png"

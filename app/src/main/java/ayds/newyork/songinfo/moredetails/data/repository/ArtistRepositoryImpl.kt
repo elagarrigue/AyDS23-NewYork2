@@ -1,5 +1,6 @@
 package ayds.newyork.songinfo.moredetails.data.repository
 
+import ayds.newyork.songinfo.moredetails.data.repository.external.Broker
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.repository.ArtistRepository
 import ayds.newyork.songinfo.moredetails.data.repository.local.sqldb.ArtistLocalStorage

@@ -1,4 +1,6 @@
 package ayds.newyork.songinfo.moredetails.data.repository
+import ayds.newyork.songinfo.moredetails.data.repository.external.DESCRIPTION_ERROR
+import ayds.newyork.songinfo.moredetails.data.repository.external.IMG_ERROR
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import ayds.winchester2.wikipediaexternal.data.wikipedia.WikipediaTrackService
