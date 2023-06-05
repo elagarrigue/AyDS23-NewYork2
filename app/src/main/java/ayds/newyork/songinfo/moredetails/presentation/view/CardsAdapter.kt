@@ -15,7 +15,6 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import com.squareup.picasso.Picasso
 
-private const val IMG_ERROR = "app/src/main/java/ayds/newyork/songinfo/moredetails/data/repository/local/sqldb/img/error.png"
 private const val DESCRIPTION_ERROR = "No se pudo obtener información"
 
 class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
@@ -25,7 +24,7 @@ class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
     fun setCards(cards: List<ArtistCard>) {
         when(cards.isEmpty()) {
             true -> {
-                val allProxysFailedList: List<ArtistCard> = listOf(ArtistCard(DESCRIPTION_ERROR, "", Source.Error, IMG_ERROR, false))
+                val allProxysFailedList: List<ArtistCard> = listOf(ArtistCard(DESCRIPTION_ERROR, "", Source.Error, "", false))
                 this.cards = allProxysFailedList
             }
             else ->
@@ -59,7 +58,6 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val openUrlButton: Button = itemView.findViewById(R.id.openUrlButton)
 
     fun bind(card: ArtistCard) {
-        Picasso.get().load(card.sourceLogoUrl).into(imageView)
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         sourceTextView.text = card.source.toString()
 
@@ -78,6 +76,7 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private fun setVisibleCardAttributes(card: ArtistCard) {
+        Picasso.get().load(card.sourceLogoUrl).into(imageView)
         sourceLabelTextView.visibility = View.VISIBLE
         openUrlButton.visibility = View.VISIBLE
         openUrlButton.setOnClickListener{ openExternalUrl(card.infoUrl) }
