@@ -1,8 +1,7 @@
 package ayds.newyork.songinfo.moredetails.data.repository
+
 import ayds.lisboa3.submodule.lastFm.LastFmArtistInfo
 import ayds.lisboa3.submodule.lastFm.LastFmService
-import ayds.newyork.songinfo.moredetails.data.repository.external.DESCRIPTION_ERROR
-import ayds.newyork.songinfo.moredetails.data.repository.external.IMG_ERROR
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 

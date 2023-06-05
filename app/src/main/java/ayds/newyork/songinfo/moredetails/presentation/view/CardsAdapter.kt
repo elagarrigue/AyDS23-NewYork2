@@ -11,15 +11,26 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import ayds.newyork.songinfo.R
-import ayds.newyork.songinfo.moredetails.domain.entities.Card
+import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
+import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import com.squareup.picasso.Picasso
+
+private const val DESCRIPTION_ERROR = "No se pudo obtener información"
 
 class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
 
-    private var cards: List<Card.ArtistCard> = emptyList()
+    private var cards: List<ArtistCard> = emptyList()
 
-    fun setCards(cards: List<Card.ArtistCard>) {
-        this.cards = cards
+    fun setCards(cards: List<ArtistCard>) {
+        when(cards.isEmpty()) {
+            true -> {
+                val allProxysFailedList: List<ArtistCard> = listOf(ArtistCard(DESCRIPTION_ERROR, "", Source.Error, "", false))
+                this.cards = allProxysFailedList
+            }
+            else ->
+                this.cards = cards
+        }
+
         notifyDataSetChanged()
     }
 
@@ -46,7 +57,7 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val description: TextView = itemView.findViewById(R.id.descriptionTextView)
     private val openUrlButton: Button = itemView.findViewById(R.id.openUrlButton)
 
-    fun bind(card: Card.ArtistCard) {
+    fun bind(card: ArtistCard) {
         Picasso.get().load(card.sourceLogoUrl).into(imageView)
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         sourceTextView.text = card.source.toString()
