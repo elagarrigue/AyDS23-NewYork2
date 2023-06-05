@@ -15,6 +15,7 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import com.squareup.picasso.Picasso
 
+private const val IMG_ERROR = "app/src/main/java/ayds/newyork/songinfo/moredetails/data/repository/local/sqldb/img/error.png"
 private const val DESCRIPTION_ERROR = "No se pudo obtener información"
 
 class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
@@ -24,7 +25,7 @@ class CardsAdapter : RecyclerView.Adapter<CardViewHolder>() {
     fun setCards(cards: List<ArtistCard>) {
         when(cards.isEmpty()) {
             true -> {
-                val allProxysFailedList: List<ArtistCard> = listOf(ArtistCard(DESCRIPTION_ERROR, "", Source.Error, "", false))
+                val allProxysFailedList: List<ArtistCard> = listOf(ArtistCard(DESCRIPTION_ERROR, "", Source.Error, IMG_ERROR, false))
                 this.cards = allProxysFailedList
             }
             else ->
@@ -61,16 +62,24 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         Picasso.get().load(card.sourceLogoUrl).into(imageView)
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         sourceTextView.text = card.source.toString()
+
         if(card.infoUrl == ""){
-            sourceLabelTextView.visibility = View.GONE
-            openUrlButton.visibility = View.GONE
-        }else {
-            sourceLabelTextView.visibility = View.VISIBLE
-            openUrlButton.visibility = View.VISIBLE
-            openUrlButton.setOnClickListener {
-                openExternalUrl(card.infoUrl)
-            }
+            setMissingUrlView()
         }
+        else {
+            setVisibleCardAttributes(card)
+        }
+    }
+
+    private fun setMissingUrlView() {
+        sourceLabelTextView.visibility = View.GONE
+        openUrlButton.visibility = View.GONE
+    }
+
+    private fun setVisibleCardAttributes(card: ArtistCard) {
+        sourceLabelTextView.visibility = View.VISIBLE
+        openUrlButton.visibility = View.VISIBLE
+        openUrlButton.setOnClickListener{ openExternalUrl(card.infoUrl) }
     }
 
     private fun openExternalUrl(url: String?) {
