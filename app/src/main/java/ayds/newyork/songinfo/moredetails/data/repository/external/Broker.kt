@@ -19,13 +19,7 @@ internal class BrokerImpl(private val proxies: List<Proxy>) : Broker {
             var card = proxy.getCard(artistName)
             if(card != null)
                 cards.add(card)
-            else {
-                card = proxy.getMessageCard()
-                cards.add(card)
-                break
-            }
         }
-
         return cards
     }
 }

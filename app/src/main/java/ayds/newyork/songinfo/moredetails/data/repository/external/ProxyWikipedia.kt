@@ -1,6 +1,4 @@
 package ayds.newyork.songinfo.moredetails.data.repository
-import ayds.newyork.songinfo.moredetails.data.repository.external.DESCRIPTION_ERROR
-import ayds.newyork.songinfo.moredetails.data.repository.external.IMG_ERROR
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
 import ayds.winchester2.wikipediaexternal.data.wikipedia.WikipediaTrackService
@@ -13,9 +11,6 @@ internal class ProxyWikipediaImpl(private val wikipediaTrackService : WikipediaT
         return adaptWikipediaInfoToCard(wikipediaInfo)
     }
 
-    override fun getMessageCard(): ArtistCard {
-        return ArtistCard(DESCRIPTION_ERROR,"",Source.Error, IMG_ERROR,false)
-    }
 
     private fun adaptWikipediaInfoToCard(wikipediaInfo: ArtistInfo?): ArtistCard? {
         return if(wikipediaInfo == null) {

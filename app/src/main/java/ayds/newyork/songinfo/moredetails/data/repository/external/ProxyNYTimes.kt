@@ -10,7 +10,6 @@ import ayds.newyork.songinfo.moredetails.domain.entities.Source
 
 interface Proxy {
     fun getCard(artistName: String): ArtistCard?
-    fun getMessageCard(): ArtistCard
 }
 
 internal class ProxyNYTimesImpl(private val nyTimesService : NYTimesService) : Proxy {
@@ -20,9 +19,6 @@ internal class ProxyNYTimesImpl(private val nyTimesService : NYTimesService) : P
         return adaptNYTimesInfoToCard(nyInfo)
     }
 
-    override fun getMessageCard(): ArtistCard {
-        return ArtistCard(DESCRIPTION_ERROR,"",Source.Error, IMG_ERROR,false)
-    }
 
     private fun adaptNYTimesInfoToCard(nyTimesInfo: ArtistDataExternal): ArtistCard? {
         return if(nyTimesInfo is ArtistDataExternal.ArtistWithDataExternal) {
