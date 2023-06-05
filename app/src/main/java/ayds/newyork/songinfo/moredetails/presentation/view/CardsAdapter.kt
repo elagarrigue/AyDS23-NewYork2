@@ -72,6 +72,7 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private fun setMissingUrlView() {
+        Picasso.get().load(R.drawable.error).into(imageView);
         sourceLabelTextView.visibility = View.GONE
         openUrlButton.visibility = View.GONE
     }

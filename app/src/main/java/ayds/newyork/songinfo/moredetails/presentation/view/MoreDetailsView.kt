@@ -64,7 +64,7 @@ class MoreDetailsViewImpl : MoreDetailsView, AppCompatActivity() {
 
     private fun updateUIComponents(uiState: MoreDetailsUIState) {
         runOnUiThread {
-            cardsAdapter.setCards(emptyList())
+            cardsAdapter.setCards(uiState.artistCards)
         }
     }
 
