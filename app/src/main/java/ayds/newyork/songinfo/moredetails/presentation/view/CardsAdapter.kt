@@ -60,7 +60,10 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(card: ArtistCard) {
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         sourceTextView.text = card.source.toString()
+        setVisualAttributes(card)
+    }
 
+    private fun setVisualAttributes(card: ArtistCard){
         if(card.infoUrl == ""){
             setMissingUrlView()
         }

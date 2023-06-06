@@ -9,7 +9,7 @@ interface MoreDetailsPresenter {
 
     val uiStateObservable: Observable<MoreDetailsUIState>
     val onUIStateSubject: Subject<MoreDetailsUIState>
-    var uiState: MoreDetailsUIState
+    val uiState: MoreDetailsUIState
     fun openArtistInfoWindow(artistName: String)
 }
 
@@ -29,15 +29,17 @@ internal class MoreDetailsPresenterImpl(
 
     private fun loadArtistInfo(artistName: String) {
         val artistData = repository.getArtistData(artistName)
-        uiState.artistCards = artistData.map { artist ->
-            ArtistCard(
-                description = formatter.format(artist, artistName),
-                infoUrl = artist.infoUrl,
-                source = artist.source,
-                sourceLogoUrl = artist.sourceLogoUrl,
-                isInDatabase = artist.isInDatabase
-            )
-        }
+        uiState = uiState.copy(
+            artistData.map { artist ->
+                ArtistCard(
+                    description = formatter.format(artist, artistName),
+                    infoUrl = artist.infoUrl,
+                    source = artist.source,
+                    sourceLogoUrl = artist.sourceLogoUrl,
+                    isInDatabase = artist.isInDatabase
+                )
+            }
+        )
         uiStateObservable.notify(uiState)
     }
 }
