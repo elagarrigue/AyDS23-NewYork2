@@ -1,5 +1,6 @@
 package ayds.newyork.songinfo.moredetails.presentation.view
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ayds.newyork.songinfo.R
 import ayds.newyork.songinfo.moredetails.domain.entities.Card.ArtistCard
 import ayds.newyork.songinfo.moredetails.domain.entities.Source
+import ayds.newyork.songinfo.utils.UtilsInjector
+import ayds.newyork.songinfo.utils.navigation.NavigationUtils
 import com.squareup.picasso.Picasso
 
 private const val DESCRIPTION_ERROR = "No se pudo obtener información"
@@ -56,6 +59,7 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val sourceTextView: TextView = itemView.findViewById(R.id.sourceTextView)
     private val description: TextView = itemView.findViewById(R.id.descriptionTextView)
     private val openUrlButton: Button = itemView.findViewById(R.id.openUrlButton)
+    private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
 
     fun bind(card: ArtistCard) {
         description.text = HtmlCompat.fromHtml(card.description!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
@@ -82,12 +86,8 @@ class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         Picasso.get().load(card.sourceLogoUrl).into(imageView)
         sourceLabelTextView.visibility = View.VISIBLE
         openUrlButton.visibility = View.VISIBLE
-        openUrlButton.setOnClickListener{ openExternalUrl(card.infoUrl) }
-    }
-
-    private fun openExternalUrl(url: String?) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(url)
-        itemView.context.startActivity(intent)
+        openUrlButton.setOnClickListener{
+            navigationUtils.openExternalUrl(itemView.context as Activity, card.infoUrl)
+        }
     }
 }
