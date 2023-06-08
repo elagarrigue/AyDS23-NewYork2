@@ -1,0 +1,11 @@
+[submodule "libs/NYTimesExternal"]
+	path = libs/NYTimesExternal
+	url = https://github.com/JCRossi/AyDSNewYork2-NYTimes.git
+
+[submodule "libs/WikipediaData"]
+	path = libs/WikipediaData
+	url = https://github.com/AldanaNonnenmacher/AyDS23-Winchester2-SubModuleWikipedia.git
+
+[submodule "libs/LastFmData"]
+	path = libs/LastFmData
+	url = https://github.com/NahuelMaika/Lisboa3-SubModuleLastFmData.git
